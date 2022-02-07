@@ -1,0 +1,4 @@
+* implement Col.Clone(name)
+* fix build
+* implement Create/DropAll
+* add Get/UpdateCaps
