@@ -1,4 +1,11 @@
-* implement Col.Clone(name)
-* fix build
-* implement Create/DropAll
-* add Get/UpdateCaps
+* implement Table.Exists
+* add Table.Insert/Update
+* add unit.Get/UpdateCaps
+* add data.Enum/Rc.Type
+** name/alts
+* use recursive CTE in GetCaps
+** only automatic
+* implement Col.Create/Drop
+** add Table.Sync
+*** sync all columns
+*** call from Cx.SyncAll if exists

@@ -5,10 +5,15 @@ import (
 )
 
 type User struct {
-	BasicRec
+	data.BasicRec
 	Name string
 }
 
-func (self *User) Table(cx *data.Cx) data.Table {
-	return cx.FindTable("Users")
+func (self *User) Init(cx *data.Cx, exists bool) *User {
+	self.BasicRec.Init(cx, exists)
+	return self
+}
+
+func (self *User) Table() *data.Table {
+	return self.Cx().FindTable("Users")
 }

@@ -2,6 +2,7 @@ package data
 
 type Rel interface {
 	Cols() []Col
+	AddCols(cols...Col)
 }
 
 type BasicRel struct {

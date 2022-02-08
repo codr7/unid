@@ -2,33 +2,27 @@ package data
 
 import (
 	"fmt"
-	"github.com/jackc/pgx/v4"
+	"strings"
 )
 
-type Table interface {
-	Def
-	Rel
-
-	PrimaryKey() Key
-}
-
-type BasicTable struct {
+type Table struct {
 	BasicDef
 	BasicRel
 	
-	primaryKey Key
-	otherKeys []Key
+	primaryKey *Key
+	foreignKeys []*ForeignKey
 	lookup map[string]Def
 }
 
-func (self *BasicTable) Init(name string, keyCols...Col) *BasicTable {
+func (self *Table) Init(name string, keyCols...Col) *Table {
 	self.BasicDef.Init(name)
 	self.primaryKey = NewKey(fmt.Sprintf("%vPrimaryKey", name), keyCols...)
 	self.lookup = make(map[string]Def)
+	self.AddCols(keyCols...)
 	return self
 }
 
-func (self *BasicTable) AddCols(cols...Col) {
+func (self *Table) AddCols(cols...Col) {
 	self.BasicRel.AddCols(cols...)
 
 	for _, c := range cols {
@@ -36,23 +30,58 @@ func (self *BasicTable) AddCols(cols...Col) {
 	}
 }
 
-func (self *BasicTable) PrimaryKey() Key {
+func (self *Table) PrimaryKey() *Key {
 	return self.primaryKey
 }
 
-func (self *BasicTable) NewForeignKey(name string, foreignTable Table) *ForeignKey {
-	k := new(ForeignKey).Init(name, foreignTable)
-	self.otherKeys = append(self.otherKeys, k)
-	self.lookup[name] = k
-	return k
-}
+func (self *Table) Create(cx *Cx) error {
+	var sql strings.Builder
+	fmt.Fprintf(&sql, "CREATE TABLE %v (", self.name)
 
-func (self *BasicTable) Scan(row pgx.Row) ([]interface{}, error) {
-	out := make([]interface{}, len(self.Cols()))
-
-	for i, c := range self.Cols() {
-		out[i] = c.InitField()
+	for i, c := range self.cols {
+		if i > 0 {
+			sql.WriteString(", ")
+		}
+		
+		fmt.Fprintf(&sql, "%v %v NOT NULL", c.Name(), c.ValType())
 	}
 	
-	return out, row.Scan(out...)
+	sql.WriteRune(')')
+
+	if err := cx.ExecSQL(sql.String()); err != nil {
+		return err
+	}
+		
+	if err := self.primaryKey.Create(cx, self); err != nil {
+		return err
+	}
+
+	for _, k := range self.foreignKeys {
+		if err := k.Create(cx, self); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (self *Table) Exists(cx *Cx) (bool, error) {
+	//TODO pg_tables
+	return false, nil
+}
+
+func (self *Table) Drop(cx *Cx) error {
+	for _, k := range self.foreignKeys {
+		if err := k.Drop(cx, self); err != nil {
+			return err
+		}
+	}
+
+	sql := fmt.Sprintf("DROP TABLE IF EXISTS %v", self.name)
+
+	if err := cx.ExecSQL(sql); err != nil {
+		return err
+	}
+
+	return nil
 }

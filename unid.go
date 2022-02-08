@@ -2,15 +2,14 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
-	"os"
 	"github.com/jackc/pgx/v4"
+	"github.com/codr7/unid/lib"
 	"github.com/codr7/unid/lib/data"
 )
 
 func main() {
-	url := "postgres://unid:unid@localhost:5432/unid"
+	url := "postgres://test:test@localhost:5432/test"
 	dbc, err := pgx.Connect(context.Background(), url)
 
 	if err != nil {
@@ -20,15 +19,13 @@ func main() {
 	defer dbc.Close(context.Background())
 	cx := data.NewCx(dbc)
 	
-	users := cx.NewTable("Users", data.NewStringCol("Name"))
-
-	rcs := cx.NewTable("Rcs", data.NewStringCol("Name"))
-	rcs.NewForeignKey("CreatedBy", users)
+	unid.InitDb(cx)
 	
-	caps := cx.NewTable("Caps", data.NewStringCol("RcName"), data.NewTimeCol("StartsAt"))
-	caps.NewForeignKey("Rc", rcs)
-	caps.AddCols(data.NewTimeCol("EndsAt"), data.NewIntCol("Total"), data.NewIntCol("Used"))
-
-	cx.DropAll()
-	cx.CreateAll()
+	if err := cx.DropAll(); err != nil {
+		log.Fatal(err)
+	}
+	
+	if err := cx.SyncAll(); err != nil {
+		log.Fatal(err)
+	}
 }

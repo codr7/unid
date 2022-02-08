@@ -1,17 +1,24 @@
 package data
 
 import (
-	"time"
 )
 
 type Col interface {
-	Def
-	InitField() interface{}
+	TableDef
+	Clone(name string) Col
 	ValType() string
 }
 
 type BasicCol struct {
 	BasicDef
+}
+
+func (self *BasicCol) Create(cx *Cx, table *Table) error {
+	return nil
+}
+
+func (self *BasicCol) Drop(cx *Cx, table *Table) error {
+	return nil
 }
 
 type IntCol struct {
@@ -27,8 +34,8 @@ func (self *IntCol) Init(name string) *IntCol {
 	return self
 }
 
-func (self *IntCol) InitField() interface{} {
-	return new(*int)
+func (self *IntCol) Clone(name string) Col {
+	return NewIntCol(name)
 }
 
 func (self *IntCol) ValType() string {
@@ -48,8 +55,8 @@ func (self *StringCol) Init(name string) *StringCol {
 	return self
 }
 
-func (self *StringCol) InitField() interface{} {
-	return new(*string)
+func (self *StringCol) Clone(name string) Col {
+	return NewStringCol(name)
 }
 
 func (self *StringCol) ValType() string {
@@ -69,8 +76,8 @@ func (self *TimeCol) Init(name string) *TimeCol {
 	return self
 }
 
-func (self *TimeCol) InitField() interface{} {
-	return new(*time.Time)
+func (self *TimeCol) Clone(name string) Col {
+	return NewTimeCol(name)
 }
 
 func (self *TimeCol) ValType() string {

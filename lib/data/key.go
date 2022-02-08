@@ -1,21 +1,58 @@
 package data
 
-type Key interface {
-	Def
-	Rel
-}
+import (
+	"fmt"
+	"strings"
+)
 
-type BasicKey struct {
+type Key struct {
 	BasicDef
 	BasicRel
 }
 
-func NewKey(name string, cols...Col) *BasicKey {
-	return new(BasicKey).Init(name, cols...)
+func NewKey(name string, cols...Col) *Key {
+	return new(Key).Init(name, cols...)
 }
 
-func (self *BasicKey) Init(name string, cols...Col) *BasicKey {
+func (self *Key) Init(name string, cols...Col) *Key {
 	self.BasicDef.Init(name)
 	self.AddCols(cols...)
 	return self
+}
+
+func (self *Key) Create(cx *Cx, table *Table) error {
+	ct := "UNIQUE"
+
+	if table.primaryKey == self {
+		ct = "PRIMARY KEY"
+	}
+	
+	var sql strings.Builder
+	fmt.Fprintf(&sql, "ALTER TABLE %v ADD CONSTRAINT %v %v (", table.name, self.name, ct)
+
+	for i, c := range self.cols {
+		if i > 0 {
+			sql.WriteString(", ")
+		}
+
+		sql.WriteString(c.Name())
+	}
+	
+	sql.WriteRune(')')
+
+	if err := cx.ExecSQL(sql.String()); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (self *Key) Drop(cx *Cx, table *Table) error {
+	sql := fmt.Sprintf("ALTER TABLE %v DROP CONSTRAINT IF EXISTS %v", table.name, self.name)
+
+	if err := cx.ExecSQL(sql); err != nil {
+		return err
+	}
+
+	return nil
 }
