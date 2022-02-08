@@ -8,7 +8,8 @@
 ** only automatic
 * implement Col.Create/Drop
 ** add Table.Sync
-*** sync all columns
+*** sync all columns/keys
 *** call from Cx.SyncAll if exists
-* add data.Enum/Rc.Type
+* add data.Enum
+** unidys
 ** name/alts

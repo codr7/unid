@@ -1,11 +1,13 @@
 package data
 
 import (
+	"time"
 )
 
 type Col interface {
 	TableDef
 	Clone(name string) Col
+	NewField() interface{}
 	ValType() string
 }
 
@@ -38,6 +40,9 @@ func (self *IntCol) Clone(name string) Col {
 	return NewIntCol(name)
 }
 
+func (self *IntCol) NewField() interface{} {
+	return new(*int)
+}
 func (self *IntCol) ValType() string {
 	return "INTEGER"
 }
@@ -59,6 +64,10 @@ func (self *StringCol) Clone(name string) Col {
 	return NewStringCol(name)
 }
 
+func (self *StringCol) NewField() interface{} {
+	return new(*string)
+}
+
 func (self *StringCol) ValType() string {
 	return "TEXT"
 }
@@ -78,6 +87,10 @@ func (self *TimeCol) Init(name string) *TimeCol {
 
 func (self *TimeCol) Clone(name string) Col {
 	return NewTimeCol(name)
+}
+
+func (self *TimeCol) NewField() interface{} {
+	return new(*time.Time)
 }
 
 func (self *TimeCol) ValType() string {

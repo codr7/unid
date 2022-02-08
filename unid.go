@@ -3,9 +3,9 @@ package main
 import (
 	"context"
 	"log"
-	"github.com/jackc/pgx/v4"
 	"github.com/codr7/unid/lib"
 	"github.com/codr7/unid/lib/data"
+	"github.com/jackc/pgx/v4"
 )
 
 func main() {
