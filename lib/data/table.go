@@ -8,18 +8,24 @@ import (
 type Table struct {
 	BasicDef
 	BasicRel
-	
+
+	cx *Cx
 	primaryKey *Key
 	foreignKeys []*ForeignKey
 	lookup map[string]Def
 }
 
-func (self *Table) Init(name string, keyCols...Col) *Table {
+func (self *Table) Init(cx *Cx, name string, keyCols...Col) *Table {
 	self.BasicDef.Init(name)
+	self.cx = cx
 	self.primaryKey = NewKey(fmt.Sprintf("%vPrimaryKey", name), keyCols...)
 	self.lookup = make(map[string]Def)
 	self.AddCols(keyCols...)
 	return self
+}
+
+func (self *Table) Cx() *Cx {
+	return self.cx
 }
 
 func (self *Table) AddCols(cols...Col) {
@@ -34,7 +40,14 @@ func (self *Table) PrimaryKey() *Key {
 	return self.primaryKey
 }
 
-func (self *Table) Create(cx *Cx) error {
+func (self *Table) NewForeignKey(name string, foreignTable *Table) *ForeignKey {
+	k := new(ForeignKey).Init(fmt.Sprintf("%v%vKey", self.name, name), foreignTable)
+	self.foreignKeys = append(self.foreignKeys, k)
+	self.lookup[name] = k
+	return k
+}
+
+func (self *Table) Create() error {
 	var sql strings.Builder
 	fmt.Fprintf(&sql, "CREATE TABLE %v (", self.name)
 
@@ -48,16 +61,16 @@ func (self *Table) Create(cx *Cx) error {
 	
 	sql.WriteRune(')')
 
-	if err := cx.ExecSQL(sql.String()); err != nil {
+	if err := self.cx.ExecSQL(sql.String()); err != nil {
 		return err
 	}
 		
-	if err := self.primaryKey.Create(cx, self); err != nil {
+	if err := self.primaryKey.Create(self); err != nil {
 		return err
 	}
 
 	for _, k := range self.foreignKeys {
-		if err := k.Create(cx, self); err != nil {
+		if err := k.Create(self); err != nil {
 			return err
 		}
 	}
@@ -65,21 +78,21 @@ func (self *Table) Create(cx *Cx) error {
 	return nil
 }
 
-func (self *Table) Exists(cx *Cx) (bool, error) {
+func (self *Table) Exists() (bool, error) {
 	//TODO pg_tables
 	return false, nil
 }
 
-func (self *Table) Drop(cx *Cx) error {
+func (self *Table) Drop() error {
 	for _, k := range self.foreignKeys {
-		if err := k.Drop(cx, self); err != nil {
+		if err := k.Drop(self); err != nil {
 			return err
 		}
 	}
 
 	sql := fmt.Sprintf("DROP TABLE IF EXISTS %v", self.name)
 
-	if err := cx.ExecSQL(sql); err != nil {
+	if err := self.cx.ExecSQL(sql); err != nil {
 		return err
 	}
 

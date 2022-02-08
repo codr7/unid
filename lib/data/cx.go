@@ -23,7 +23,7 @@ func (self *Cx) Init(conn *pgx.Conn) *Cx {
 }
 
 func (self *Cx) NewTable(name string, primaryCols...Col) *Table {
-	t := new(Table).Init(name, primaryCols...)
+	t := new(Table).Init(self, name, primaryCols...)
 	self.tableLookup[name] = t
 	self.defs = append(self.defs, t)
 	return t
@@ -41,10 +41,10 @@ func (self *Cx) ExecSQL(sql string, params...interface{}) error {
 
 func (self *Cx) SyncAll() error {
 	for _, d := range self.defs {
-		if ok, err := d.Exists(self); err != nil {
+		if ok, err := d.Exists(); err != nil {
 			return err
 		}  else if !ok {
-			d.Create(self)
+			d.Create()
 		}
 	}
 	
@@ -53,7 +53,7 @@ func (self *Cx) SyncAll() error {
 
 func (self *Cx) DropAll() error {
 	for i := range self.defs {
-		if err := self.defs[len(self.defs)-i-1].Drop(self); err != nil {
+		if err := self.defs[len(self.defs)-i-1].Drop(); err != nil {
 			return err
 		}
 	}

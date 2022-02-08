@@ -21,18 +21,11 @@ func (self *ForeignKey) Init(name string, foreignTable *Table) *ForeignKey {
 	return self
 }
 
-func (self *Table) NewForeignKey(name string, foreignTable *Table) *ForeignKey {
-	k := new(ForeignKey).Init(fmt.Sprintf("%v%vKey", self.name, name), foreignTable)
-	self.foreignKeys = append(self.foreignKeys, k)
-	self.lookup[name] = k
-	return k
-}
-
 func (self *ForeignKey) ForeignTable() *Table {
 	return self.foreignTable
 }
 
-func (self *ForeignKey) Create(cx *Cx, table *Table) error {
+func (self *ForeignKey) Create(table *Table) error {
 	var sql strings.Builder
 	fmt.Fprintf(&sql, "ALTER TABLE %v ADD CONSTRAINT %v FOREIGN KEY (", table.name, self.name)
 
@@ -56,7 +49,7 @@ func (self *ForeignKey) Create(cx *Cx, table *Table) error {
 
 	sql.WriteRune(')')
 
-	if err := cx.ExecSQL(sql.String()); err != nil {
+	if err := table.Cx().ExecSQL(sql.String()); err != nil {
 		return err
 	}
 

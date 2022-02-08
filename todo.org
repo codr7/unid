@@ -1,11 +1,14 @@
-* implement Table.Exists
 * add Table.Insert/Update
-* add unit.Get/UpdateCaps
-* add data.Enum/Rc.Type
-** name/alts
+* store admin user in unid.InitDb
+* add Rc struct
+* add Cap struct
+* add Get/UpdateCaps
+* implement Table.Exists
 * use recursive CTE in GetCaps
 ** only automatic
 * implement Col.Create/Drop
 ** add Table.Sync
 *** sync all columns
 *** call from Cx.SyncAll if exists
+* add data.Enum/Rc.Type
+** name/alts

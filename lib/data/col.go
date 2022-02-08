@@ -13,11 +13,11 @@ type BasicCol struct {
 	BasicDef
 }
 
-func (self *BasicCol) Create(cx *Cx, table *Table) error {
+func (self *BasicCol) Create(table *Table) error {
 	return nil
 }
 
-func (self *BasicCol) Drop(cx *Cx, table *Table) error {
+func (self *BasicCol) Drop(table *Table) error {
 	return nil
 }
 

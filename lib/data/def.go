@@ -6,15 +6,15 @@ type Def interface {
 
 type RootDef interface {
 	Def
-	Create(cx *Cx) error
-	Exists(cx *Cx) (bool, error)
-	Drop(cx *Cx) error
+	Create() error
+	Exists() (bool, error)
+	Drop() error
 }
 
 type TableDef interface {
 	Def
-	Create(cx *Cx, table *Table) error
-	Drop(cx *Cx, table *Table) error
+	Create(table *Table) error
+	Drop(table *Table) error
 }
 
 type BasicDef struct {

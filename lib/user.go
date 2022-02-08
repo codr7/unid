@@ -9,6 +9,10 @@ type User struct {
 	Name string
 }
 
+func NewUser(cx *data.Cx) *User {
+	return new(User).Init(cx, false)
+}
+
 func (self *User) Init(cx *data.Cx, exists bool) *User {
 	self.BasicRec.Init(cx, exists)
 	return self

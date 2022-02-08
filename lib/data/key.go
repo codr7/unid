@@ -20,7 +20,7 @@ func (self *Key) Init(name string, cols...Col) *Key {
 	return self
 }
 
-func (self *Key) Create(cx *Cx, table *Table) error {
+func (self *Key) Create(table *Table) error {
 	ct := "UNIQUE"
 
 	if table.primaryKey == self {
@@ -40,17 +40,17 @@ func (self *Key) Create(cx *Cx, table *Table) error {
 	
 	sql.WriteRune(')')
 
-	if err := cx.ExecSQL(sql.String()); err != nil {
+	if err := table.Cx().ExecSQL(sql.String()); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (self *Key) Drop(cx *Cx, table *Table) error {
+func (self *Key) Drop(table *Table) error {
 	sql := fmt.Sprintf("ALTER TABLE %v DROP CONSTRAINT IF EXISTS %v", table.name, self.name)
 
-	if err := cx.ExecSQL(sql); err != nil {
+	if err := table.Cx().ExecSQL(sql); err != nil {
 		return err
 	}
 

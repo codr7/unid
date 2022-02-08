@@ -19,8 +19,10 @@ func main() {
 	defer dbc.Close(context.Background())
 	cx := data.NewCx(dbc)
 	
-	unid.InitDb(cx)
-	
+	if err := unid.InitDb(cx); err != nil {
+		log.Fatal(err)
+	}
+
 	if err := cx.DropAll(); err != nil {
 		log.Fatal(err)
 	}
