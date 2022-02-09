@@ -1,5 +1,3 @@
-* add Table.Insert/Update
-* store admin user in unid.InitDb
 * add Rc struct
 * add Cap struct
 * add Get/UpdateCaps

@@ -13,6 +13,10 @@ func InitDb(cx *data.Cx) error {
 	caps := cx.NewTable("Caps", data.NewStringCol("RcName"), data.NewTimeCol("StartsAt"))
 	caps.NewForeignKey("Rc", rcs)
 	caps.AddCols(data.NewTimeCol("EndsAt"), data.NewIntCol("Total"), data.NewIntCol("Used"))
+	
+	if err := cx.DropAll(); err != nil {
+		return err
+	}
 
 	if ok, err := users.Exists(); err != nil {
 		return err
@@ -21,7 +25,7 @@ func InitDb(cx *data.Cx) error {
 
 		admin := NewUser(cx)
 		admin.Name = "admin"
-		//TODO Store
+		data.Store(admin)
 	}
 
 	return nil

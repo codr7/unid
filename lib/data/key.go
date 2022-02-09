@@ -16,6 +16,7 @@ func NewKey(name string, cols...Col) *Key {
 
 func (self *Key) Init(name string, cols...Col) *Key {
 	self.BasicDef.Init(name)
+	self.BasicRel.Init()
 	self.AddCols(cols...)
 	return self
 }

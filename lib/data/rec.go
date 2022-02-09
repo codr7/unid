@@ -8,7 +8,9 @@ import (
 
 type Rec interface {
 	Exists() bool
-	Table() Table
+	Table() *Table
+	DoInsert(rec Rec) error
+	DoUpdate(rec Rec) error
 }
 
 type BasicRec struct {
@@ -27,6 +29,24 @@ func (self *BasicRec) Cx() *Cx {
 
 func (self *BasicRec) Exists() bool {
 	return self.exists
+}
+
+func (self *BasicRec) DoInsert(rec Rec) error {
+	self.exists = false
+	return rec.Table().Insert(rec)
+}
+
+func (self *BasicRec) DoUpdate(rec Rec) error {
+	self.exists = false
+	return rec.Table().Update(rec)
+}
+
+func Store(rec Rec) error {
+	if rec.Exists() {
+		return rec.DoUpdate(rec)
+	}
+
+	return rec.DoInsert(rec)
 }
 
 func GetField(rec Rec, name string) reflect.Value {

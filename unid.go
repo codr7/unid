@@ -22,10 +22,6 @@ func main() {
 	if err := unid.InitDb(cx); err != nil {
 		log.Fatal(err)
 	}
-
-	if err := cx.DropAll(); err != nil {
-		log.Fatal(err)
-	}
 	
 	if err := cx.SyncAll(); err != nil {
 		log.Fatal(err)
