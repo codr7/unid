@@ -65,10 +65,8 @@ func (self *Table) NewForeignKey(name string, foreignTable *Table) *ForeignKey {
 
 	for _, c := range foreignTable.PrimaryKey().Cols() {
 		fn := fmt.Sprintf("%v%v", name, c.Name())
-		log.Printf("Adding: %v %v\n", self.name, fn)
 		
 		if self.FindCol(fn) != nil {
-			panic("hey")
 			log.Fatalf("Duplicate column in %v: %v", self.name, fn)
 		}
 		
