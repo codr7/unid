@@ -17,7 +17,11 @@ func NewUser(cx *data.Cx) *User {
 
 func (self *User) Init(cx *data.Cx, exists bool) *User {
 	self.BasicRec.Init(cx, exists)
-	self.CreatedAt = time.Now()
+
+	if !exists {
+		self.CreatedAt = time.Now()
+	}
+
 	return self 
 }
 
