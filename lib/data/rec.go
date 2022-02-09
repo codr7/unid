@@ -75,7 +75,7 @@ func NewRecProxy(table *Table) *RecProxy {
 
 func (self *RecProxy) Init(table *Table) *RecProxy {
 	self.table = table
-	cs := table.primaryKey.cols
+	cs := table.PrimaryKey().cols
 	self.key = make([]interface{}, len(cs))
 	
 	for i, c := range cs {
@@ -106,7 +106,7 @@ func (self *RecProxy) Table() *Table {
 func (self *RecProxy) Load(rec Rec) (Rec, error) {
 	k := self.Key()
 	
-	for i, c := range self.table.cols {
+	for i, c := range self.table.PrimaryKey().cols {
 		c.SetFieldValue(rec, k[i])
 	}
 	

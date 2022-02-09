@@ -9,15 +9,18 @@ import (
 type Col interface {
 	Field
 	TableDef
-	NewForeignCol(name string, key *ForeignKey) Col
+	NewForeignCol(table *Table, name string, key *ForeignKey) Col
 	NewField() interface{}
 	ValType() string
+	IsPrimaryKey() bool
+	SetPrimaryKey(bool)
 	ForeignKey() *ForeignKey
 }
 
 type BasicCol struct {
 	BasicDef
 	BasicField
+	isPrimaryKey bool
 	foreignKey *ForeignKey
 }
 
@@ -35,7 +38,7 @@ func (self *BasicCol) GetFieldAddr(rec Ref) interface{} {
 			return p.key[i]
 		}
 
-		return self.foreignKey.foreignTable.primaryKey.cols[i].GetFieldAddr(ref)
+		return self.foreignKey.foreignTable.PrimaryKey().cols[i].GetFieldAddr(ref)
 	}
 
 	return self.BasicField.GetFieldAddr(rec)
@@ -50,7 +53,7 @@ func (self *BasicCol) GetFieldValue(rec Ref) interface{} {
 			return p.key[i]
 		}
 
-		return self.foreignKey.foreignTable.primaryKey.cols[i].GetFieldValue(ref)
+		return self.foreignKey.foreignTable.PrimaryKey().cols[i].GetFieldValue(ref)
 	}
 
 	return self.BasicField.GetFieldValue(rec)
@@ -64,7 +67,7 @@ func (self *BasicCol) SetFieldValue(rec Ref, val interface{}) {
 		if p, ok := ref.(*RecProxy); ok {
 			p.key[i] = reflect.ValueOf(val).Addr().Interface()
 		} else {
-			self.foreignKey.foreignTable.primaryKey.cols[i].SetFieldValue(ref, val)
+			self.foreignKey.foreignTable.PrimaryKey().cols[i].SetFieldValue(ref, val)
 		}
 	} else {
 		self.BasicField.SetFieldValue(rec, val)
@@ -79,6 +82,14 @@ func (self *BasicCol) Drop(table *Table) error {
 	return nil
 }
 
+func (self *BasicCol) IsPrimaryKey() bool {
+	return self.isPrimaryKey
+}
+
+func (self *BasicCol) SetPrimaryKey(val bool) {
+	self.isPrimaryKey = val
+}
+
 func (self *BasicCol) ForeignKey() *ForeignKey {
 	return self.foreignKey
 }
@@ -87,17 +98,13 @@ type IntCol struct {
 	BasicCol
 }
 
-func NewIntCol(name string) *IntCol {
-	return new(IntCol).Init(name)
-}
-
 func (self *IntCol) Init(name string) *IntCol {
 	self.BasicCol.Init(name)
 	return self
 }
 
-func (self *IntCol) NewForeignCol(name string, key *ForeignKey) Col {
-	c := NewIntCol(name)
+func (self *IntCol) NewForeignCol(table *Table, name string, key *ForeignKey) Col {
+	c := table.NewIntCol(name)
 	c.foreignKey = key
 	return c
 }
@@ -114,17 +121,13 @@ type StringCol struct {
 	BasicCol
 }
 
-func NewStringCol(name string) *StringCol {
-	return new(StringCol).Init(name)
-}
-
 func (self *StringCol) Init(name string) *StringCol {
 	self.BasicCol.Init(name)
 	return self
 }
 
-func (self *StringCol) NewForeignCol(name string, key *ForeignKey) Col {
-	c := NewStringCol(name)
+func (self *StringCol) NewForeignCol(table *Table, name string, key *ForeignKey) Col {
+	c := table.NewStringCol(name)
 	c.foreignKey = key
 	return c
 }
@@ -142,17 +145,13 @@ type TimeCol struct {
 	BasicCol
 }
 
-func NewTimeCol(name string) *TimeCol {
-	return new(TimeCol).Init(name)
-}
-
 func (self *TimeCol) Init(name string) *TimeCol {
 	self.BasicCol.Init(name)
 	return self
 }
 
-func (self *TimeCol) NewForeignCol(name string, key *ForeignKey) Col {
-	c := NewTimeCol(name)
+func (self *TimeCol) NewForeignCol(table *Table, name string, key *ForeignKey) Col {
+	c := table.NewTimeCol(name)
 	c.foreignKey = key
 	return c
 }

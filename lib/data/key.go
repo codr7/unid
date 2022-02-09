@@ -24,19 +24,19 @@ func (self *Key) Init(name string, cols...Col) *Key {
 func (self *Key) Create(table *Table) error {
 	ct := "UNIQUE"
 
-	if table.primaryKey == self {
+	if table.PrimaryKey() == self {
 		ct = "PRIMARY KEY"
 	}
 	
 	var sql strings.Builder
-	fmt.Fprintf(&sql, "ALTER TABLE \"%v\" ADD CONSTRAINT \"%v\" \"%v\" (", table.name, self.name, ct)
+	fmt.Fprintf(&sql, "ALTER TABLE \"%v\" ADD CONSTRAINT \"%v\" %v (", table.name, self.name, ct)
 
 	for i, c := range self.cols {
 		if i > 0 {
 			sql.WriteString(", ")
 		}
 
-		sql.WriteString(c.Name())
+		fmt.Fprintf(&sql, "\"%v\"", c.Name())
 	}
 	
 	sql.WriteRune(')')

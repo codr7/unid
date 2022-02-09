@@ -26,6 +26,10 @@ func (self *BasicRel) AddCol(cols...Col) {
 }
 
 func (self *BasicRel) FindCol(name string) Col {
-	return self.cols[self.colIndices[name]]
+	if i, ok := self.colIndices[name]; ok {
+		return self.cols[i]
+	}		
+
+	return nil
 }
 

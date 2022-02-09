@@ -6,16 +6,22 @@ import (
 )
 
 func InitDb(cx *data.Cx) error {
-	users := cx.NewTable("Users", data.NewStringCol("Name"))
-	users.AddCol(data.NewTimeCol("CreatedAt"))
+	users := cx.NewTable("Users")
+	users.NewStringCol("Name").SetPrimaryKey(true)
+	users.NewTimeCol("CreatedAt")
 	
-	rcs := cx.NewTable("Rcs", data.NewStringCol("Name"))
+	rcs := cx.NewTable("Rcs")
+	rcs.NewStringCol("Name").SetPrimaryKey(true)
+	rcs.NewTimeCol("CreatedAt")
 	rcs.NewForeignKey("CreatedBy", users)
-	rcs.AddCol(data.NewTimeCol("CreatedAt"))
 	
-	caps := cx.NewTable("Caps", data.NewStringCol("RcName"), data.NewTimeCol("StartsAt"))
+	caps := cx.NewTable("Caps")
+	caps.NewTimeCol("StartsAt").SetPrimaryKey(true)
+	caps.NewTimeCol("EndsAt")
+	caps.NewIntCol("Total")
+	caps.NewIntCol("Used")
 	caps.NewForeignKey("Rc", rcs)
-	caps.AddCol(data.NewTimeCol("EndsAt"), data.NewIntCol("Total"), data.NewIntCol("Used"))
+	caps.FindCol("RcName").SetPrimaryKey(true)
 	
 	if err := cx.DropAll(); err != nil {
 		return err
@@ -24,15 +30,20 @@ func InitDb(cx *data.Cx) error {
 	if ok, err := users.Exists(); err != nil {
 		return err
 	} else if !ok {
-		users.Create()
+		if err := users.Create(); err != nil {
+			return err
+		}
 
 		admin := NewUser(cx)
 		admin.Name = "admin"
+
 		if err := data.Store(admin); err != nil {
 			log.Fatal(err)
 		}
 
-		rcs.Create()
+		if err := rcs.Create(); err != nil {
+			return err
+		}
 		
 		lodging := NewRc(cx)
 		lodging.CreatedBy = admin

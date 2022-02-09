@@ -22,8 +22,8 @@ func (self *Cx) Init(conn *pgx.Conn) *Cx {
 	return self
 }
 
-func (self *Cx) NewTable(name string, primaryCols...Col) *Table {
-	t := new(Table).Init(self, name, primaryCols...)
+func (self *Cx) NewTable(name string) *Table {
+	t := new(Table).Init(self, name)
 	self.tableLookup[name] = t
 	self.defs = append(self.defs, t)
 	return t
@@ -49,7 +49,9 @@ func (self *Cx) SyncAll() error {
 		if ok, err := d.Exists(); err != nil {
 			return err
 		}  else if !ok {
-			d.Create()
+			if err := d.Create(); err != nil {
+				return err
+			}
 		}
 	}
 	

@@ -2,7 +2,7 @@ package data
 
 import (
 	"fmt"
-	//"log"
+	"log"
 	"strings"
 )
 
@@ -15,12 +15,10 @@ type Table struct {
 	foreignKeys []*ForeignKey
 }
 
-func (self *Table) Init(cx *Cx, name string, keyCols...Col) *Table {
+func (self *Table) Init(cx *Cx, name string) *Table {
 	self.BasicDef.Init(name)
 	self.BasicRel.Init()
 	self.cx = cx
-	self.primaryKey = NewKey(fmt.Sprintf("%vPrimaryKey", name), keyCols...)
-	self.AddCol(keyCols...)
 	return self
 }
 
@@ -29,13 +27,55 @@ func (self *Table) Cx() *Cx {
 }
 
 func (self *Table) PrimaryKey() *Key {
+	if self.primaryKey == nil {
+		var cs []Col
+		
+		for _, c := range self.cols {
+			if c.IsPrimaryKey() {
+				cs = append(cs, c)
+			}
+		}
+		
+		self.primaryKey = NewKey(fmt.Sprintf("%vPrimaryKey", self.name), cs...)
+	}
+	
 	return self.primaryKey
+}
+
+func (self *Table) NewIntCol(name string) *IntCol {
+	c := new(IntCol).Init(name)
+	self.AddCol(c)
+	return c
+}
+
+func (self *Table) NewStringCol(name string) *StringCol {
+	c := new(StringCol).Init(name)
+	self.AddCol(c)
+	return c
+}
+
+func (self *Table) NewTimeCol(name string) *TimeCol {
+	c := new(TimeCol).Init(name)
+	self.AddCol(c)
+	return c
 }
 
 func (self *Table) NewForeignKey(name string, foreignTable *Table) *ForeignKey {
 	k := new(ForeignKey).Init(fmt.Sprintf("%v%vKey", self.name, name), name, foreignTable)
+
+	for _, c := range foreignTable.PrimaryKey().Cols() {
+		fn := fmt.Sprintf("%v%v", name, c.Name())
+		log.Printf("Adding: %v %v\n", self.name, fn)
+		
+		if self.FindCol(fn) != nil {
+			panic("hey")
+			log.Fatalf("Duplicate column in %v: %v", self.name, fn)
+		}
+		
+		k.AddCol(c.NewForeignCol(self, fn, k))
+	}
+
 	self.foreignKeys = append(self.foreignKeys, k)
-	self.AddCol(k.cols...)
 	return k
 }
 
@@ -57,7 +97,7 @@ func (self *Table) Create() error {
 		return err
 	}
 		
-	if err := self.primaryKey.Create(self); err != nil {
+	if err := self.PrimaryKey().Create(self); err != nil {
 		return err
 	}
 
@@ -137,7 +177,7 @@ func (self *Table) Update(rec Rec) error {
 	var params []interface{}
 	
 	for i, c := range self.cols {
-		if self.primaryKey.FindCol(c.Name()) != nil {
+		if self.PrimaryKey().FindCol(c.Name()) != nil {
 			continue
 		}
 		
@@ -151,7 +191,7 @@ func (self *Table) Update(rec Rec) error {
 	
 	sql.WriteString(" WHERE ")
 
-	for i, c := range self.primaryKey.Cols() {
+	for i, c := range self.PrimaryKey().Cols() {
 		if i > 0 {
 			sql.WriteString(" AND ")
 		}
@@ -182,7 +222,7 @@ func (self *Table) Load(rec Rec) error {
 	fmt.Fprintf(&sql, " FROM \"%v\" WHERE ", self.name)
 	var params []interface{}
 
-	for i, c := range self.primaryKey.Cols() {
+	for i, c := range self.PrimaryKey().Cols() {
 		if i > 0 {
 			sql.WriteString(" AND ")
 		}
