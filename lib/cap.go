@@ -14,8 +14,14 @@ type Cap struct {
 	ChangedAt time.Time
 }
 
-func NewCap(cx *data.Cx) *Cap {
-	return new(Cap).Init(cx, false)
+func NewCap(cx *data.Cx, rc *Rc, startsAt, endsAt time.Time, total, used int) *Cap {
+	c := new(Cap).Init(cx, false)
+	c.Rc = rc
+	c.StartsAt = startsAt
+	c.EndsAt = endsAt
+	c.Total = total
+	c.Used = used
+	return c
 }
 
 func (self *Cap) Init(cx *data.Cx, exists bool) *Cap {

@@ -11,18 +11,18 @@ func InitDb(cx *data.Cx) error {
 	users.NewTimeCol("CreatedAt")
 	
 	rcs := cx.NewTable("Rcs")
+	rcs.NewForeignKey("CreatedBy", users)
 	rcs.NewStringCol("Name").SetPrimaryKey(true)
 	rcs.NewTimeCol("CreatedAt")
-	rcs.NewForeignKey("CreatedBy", users)
 	
 	caps := cx.NewTable("Caps")
+	caps.NewForeignKey("Rc", rcs)
+	caps.FindCol("RcName").SetPrimaryKey(true)
 	caps.NewTimeCol("StartsAt").SetPrimaryKey(true)
 	caps.NewTimeCol("EndsAt")
 	caps.NewIntCol("Total")
 	caps.NewIntCol("Used")
 	caps.NewTimeCol("ChangedAt")
-	caps.NewForeignKey("Rc", rcs)
-	caps.FindCol("RcName").SetPrimaryKey(true)
 	
 	if err := cx.DropAll(); err != nil {
 		return err

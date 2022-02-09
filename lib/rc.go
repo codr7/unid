@@ -31,6 +31,15 @@ func (self *Rc) Table() *data.Table {
 	return self.Cx().FindTable("Rcs")
 }
 
+func (self *Rc) DoInsert(rec data.Rec) error {
+	if err := self.BasicRec.DoInsert(rec); err != nil {
+		return err
+	}
+
+	c := NewCap(self.Cx(), self, MinTime(), MaxTime(), 0, 0)
+	return data.Store(c)
+}
+
 func (self *Rc) GetCreatedBy() (*User, error) {
 	if p, ok := self.CreatedBy.(*data.RecProxy); ok {
 		out := new(User).Init(self.Cx(), true)
