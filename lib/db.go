@@ -45,11 +45,26 @@ func InitDb(cx *data.Cx) error {
 		if err := rcs.Create(); err != nil {
 			return err
 		}
+
+		if err := caps.Create(); err != nil {
+			return err
+		}
+
+		newRc := func(name string) *Rc {
+			rc := NewRc(cx)
+			rc.CreatedBy = admin
+			rc.Name = name
+
+			if err := data.Store(rc); err != nil {
+				log.Fatal(err)
+			}
+
+			return rc
+		}
 		
-		lodging := NewRc(cx)
-		lodging.CreatedBy = admin
-		lodging.Name = "lodging"
-		data.Store(lodging)
+		newRc("lodging")
+		newRc("cabins")
+		newRc("rooms")
 	}
 
 	return nil
