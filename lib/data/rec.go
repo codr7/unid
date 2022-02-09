@@ -66,7 +66,7 @@ func Store(rec Rec) error {
 
 type RecProxy struct {
 	table *Table
-	key []interface{}
+	keyFields []interface{}
 }
 
 func NewRecProxy(table *Table) *RecProxy {
@@ -76,23 +76,23 @@ func NewRecProxy(table *Table) *RecProxy {
 func (self *RecProxy) Init(table *Table) *RecProxy {
 	self.table = table
 	cs := table.PrimaryKey().cols
-	self.key = make([]interface{}, len(cs))
+	self.keyFields = make([]interface{}, len(cs))
 	
 	for i, c := range cs {
-		self.key[i] = c.NewField()
+		self.keyFields[i] = c.NewField()
 	}
 	
 	return self
 }
 
-func (self *RecProxy) Key() []interface{} {
-	out := make([]interface{}, len(self.key))
+func (self *RecProxy) KeyVals() []interface{} {
+	vals := make([]interface{}, len(self.keyFields))
 
-	for i, v := range self.key {
-		out[i] = reflect.ValueOf(v).Elem().Interface()
+	for i, v := range self.keyFields {
+		vals[i] = reflect.ValueOf(v).Elem().Interface()
 	}
 
-	return out
+	return vals
 }
 
 func (self *RecProxy) Exists() bool {
@@ -104,10 +104,10 @@ func (self *RecProxy) Table() *Table {
 }
 
 func (self *RecProxy) Load(rec Rec) (Rec, error) {
-	k := self.Key()
+	vs := self.KeyVals()
 	
 	for i, c := range self.table.PrimaryKey().cols {
-		c.SetFieldValue(rec, k[i])
+		c.SetFieldValue(rec, vs[i])
 	}
 	
 	if err := self.table.Load(rec); err != nil {

@@ -35,7 +35,7 @@ func (self *BasicCol) GetFieldAddr(rec Ref) interface{} {
 		i := self.foreignKey.colIndices[self.name]
 		
 		if p, ok := ref.(*RecProxy); ok {
-			return p.key[i]
+			return p.keyFields[i]
 		}
 
 		return self.foreignKey.foreignTable.PrimaryKey().cols[i].GetFieldAddr(ref)
@@ -50,7 +50,7 @@ func (self *BasicCol) GetFieldValue(rec Ref) interface{} {
 		i := self.foreignKey.colIndices[self.name]
 		
 		if p, ok := ref.(*RecProxy); ok {
-			return p.key[i]
+			return p.keyFields[i]
 		}
 
 		return self.foreignKey.foreignTable.PrimaryKey().cols[i].GetFieldValue(ref)
@@ -65,7 +65,7 @@ func (self *BasicCol) SetFieldValue(rec Ref, val interface{}) {
 		i := self.foreignKey.colIndices[self.name]
 		
 		if p, ok := ref.(*RecProxy); ok {
-			p.key[i] = reflect.ValueOf(val).Addr().Interface()
+			p.keyFields[i] = reflect.ValueOf(val).Addr().Interface()
 		} else {
 			self.foreignKey.foreignTable.PrimaryKey().cols[i].SetFieldValue(ref, val)
 		}

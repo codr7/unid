@@ -1,3 +1,6 @@
+* convert Table to interface
+** add BasicTable
+** grep replace *Table/Table
 * add Get/UpdateCaps
 * add dom
 * use recursive CTE in GetCaps
