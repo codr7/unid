@@ -102,3 +102,17 @@ func (self *RecProxy) Exists() bool {
 func (self *RecProxy) Table() *Table {
 	return self.table
 }
+
+func (self *RecProxy) Load(rec Rec) (Rec, error) {
+	k := self.Key()
+	
+	for i, c := range self.table.cols {
+		c.SetFieldValue(rec, k[i])
+	}
+	
+	if err := self.table.Load(rec); err != nil {
+		return nil, err
+	}
+
+	return rec, nil
+}

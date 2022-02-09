@@ -33,14 +33,9 @@ func (self *Rc) Table() *data.Table {
 
 func (self *Rc) GetCreatedBy() (*User, error) {
 	if p, ok := self.CreatedBy.(*data.RecProxy); ok {
-		self.CreatedBy = NewUser(self.Cx())
-		k := p.Key()
-		
-		for i, c := range p.Table().Cols() {
-			c.SetFieldValue(self.CreatedBy, k[i])
-		}
-		
-		if err := p.Table().Load(self.CreatedBy.(*User)); err != nil {
+		var err error
+
+		if self.CreatedBy, err = p.Load(NewUser(self.Cx())); err != nil {
 			return nil, err
 		}
 	}
