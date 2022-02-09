@@ -1,4 +1,3 @@
-* extract data logic from Rc.GetCreatedBy
 * add Cap struct
 * add Get/UpdateCaps
 * use recursive CTE in GetCaps
