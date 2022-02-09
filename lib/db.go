@@ -20,6 +20,7 @@ func InitDb(cx *data.Cx) error {
 	caps.NewTimeCol("EndsAt")
 	caps.NewIntCol("Total")
 	caps.NewIntCol("Used")
+	caps.NewTimeCol("ChangedAt")
 	caps.NewForeignKey("Rc", rcs)
 	caps.FindCol("RcName").SetPrimaryKey(true)
 	

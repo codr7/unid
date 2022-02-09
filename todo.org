@@ -1,5 +1,7 @@
-* add Cap struct
+* init cap in Rc.DoInsert()
+** add unid.Min/MaxTime()
 * add Get/UpdateCaps
+* add dom
 * use recursive CTE in GetCaps
 ** only automatic
 * implement Col.Create/Drop
