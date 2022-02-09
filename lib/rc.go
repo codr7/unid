@@ -31,11 +31,7 @@ func (self *Rc) Table() *data.Table {
 	return self.Cx().FindTable("Rcs")
 }
 
-func (self *Rc) DoInsert(rec data.Rec) error {
-	if err := self.BasicRec.DoInsert(rec); err != nil {
-		return err
-	}
-
+func (self *Rc) AfterInsert() error {
 	c := NewCap(self.Cx(), self, MinTime(), MaxTime(), 0, 0)
 	return data.Store(c)
 }

@@ -12,6 +12,7 @@ type Ref interface {
 
 type Rec interface {
 	Ref
+	AfterInsert() error
 	DoInsert(rec Rec) error
 	DoUpdate(rec Rec) error
 }
@@ -34,9 +35,17 @@ func (self *BasicRec) Exists() bool {
 	return self.exists
 }
 
+func (self *BasicRec) AfterInsert() error {
+	return nil
+}
+
 func (self *BasicRec) DoInsert(rec Rec) error {
-	self.exists = false
-	return rec.Table().Insert(rec)
+	if err := rec.Table().Insert(rec); err != nil {
+		return err
+	}
+
+	self.exists = true
+	return rec.AfterInsert()
 }
 
 func (self *BasicRec) DoUpdate(rec Rec) error {
