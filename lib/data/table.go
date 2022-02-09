@@ -195,9 +195,7 @@ func (self *Table) Load(rec Rec) error {
 	var fs []interface{}
 
 	for _, k := range self.foreignKeys {
-		if v := k.GetFieldValue(rec); v == nil {
-			k.SetFieldValue(rec, NewRecProxy(k.foreignTable))
-		}
+		k.SetFieldValue(rec, NewRecProxy(k.foreignTable))
 	}
 	
 	for _, c := range self.cols {
