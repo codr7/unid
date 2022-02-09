@@ -33,11 +33,13 @@ func (self *Rc) Table() *data.Table {
 
 func (self *Rc) GetCreatedBy() (*User, error) {
 	if p, ok := self.CreatedBy.(*data.RecProxy); ok {
-		var err error
-
-		if self.CreatedBy, err = p.Load(NewUser(self.Cx())); err != nil {
+		out := NewUser(self.Cx())
+		
+		if _, err := p.Load(out); err != nil {
 			return nil, err
 		}
+
+		return out, nil
 	}
 
 	return self.CreatedBy.(*User), nil
