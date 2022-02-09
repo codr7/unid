@@ -17,7 +17,7 @@ func NewKey(name string, cols...Col) *Key {
 func (self *Key) Init(name string, cols...Col) *Key {
 	self.BasicDef.Init(name)
 	self.BasicRel.Init()
-	self.AddCols(cols...)
+	self.AddCol(cols...)
 	return self
 }
 
@@ -29,7 +29,7 @@ func (self *Key) Create(table *Table) error {
 	}
 	
 	var sql strings.Builder
-	fmt.Fprintf(&sql, "ALTER TABLE %v ADD CONSTRAINT %v %v (", table.name, self.name, ct)
+	fmt.Fprintf(&sql, "ALTER TABLE \"%v\" ADD CONSTRAINT \"%v\" \"%v\" (", table.name, self.name, ct)
 
 	for i, c := range self.cols {
 		if i > 0 {
@@ -49,7 +49,7 @@ func (self *Key) Create(table *Table) error {
 }
 
 func (self *Key) Drop(table *Table) error {
-	sql := fmt.Sprintf("ALTER TABLE %v DROP CONSTRAINT IF EXISTS %v", table.name, self.name)
+	sql := fmt.Sprintf("ALTER TABLE \"%v\" DROP CONSTRAINT IF EXISTS \"%v\"", table.name, self.name)
 
 	if err := table.Cx().ExecSQL(sql); err != nil {
 		return err

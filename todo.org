@@ -1,7 +1,6 @@
-* add Rc struct
+* extract data logic from Rc.GetCreatedBy
 * add Cap struct
 * add Get/UpdateCaps
-* implement Table.Exists
 * use recursive CTE in GetCaps
 ** only automatic
 * implement Col.Create/Drop
@@ -10,4 +9,5 @@
 *** call from Cx.SyncAll if exists
 * add data.Enum
 ** unidys
+** cx.NewEnum
 ** name/alts

@@ -15,7 +15,7 @@ func NewUser(cx *data.Cx) *User {
 
 func (self *User) Init(cx *data.Cx, exists bool) *User {
 	self.BasicRec.Init(cx, exists)
-	return self
+	return self 
 }
 
 func (self *User) Table() *data.Table {

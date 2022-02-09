@@ -2,31 +2,30 @@ package data
 
 type Rel interface {
 	Cols() []Col
-	AddCols(cols...Col)
+	AddCol(cols...Col)
 }
 
 type BasicRel struct {
 	cols []Col
-	lookup map[string]Def
+	colIndices map[string]int
 }
 
 func (self *BasicRel) Init() {
-	self.lookup = make(map[string]Def)
+	self.colIndices = make(map[string]int)
 }
 
 func (self *BasicRel) Cols() []Col {
 	return self.cols
 }
 
-func (self *BasicRel) AddCols(cols...Col) {
-	self.cols = append(self.cols, cols...)
-
+func (self *BasicRel) AddCol(cols...Col) {
 	for _, c := range cols {
-		self.lookup[c.Name()] = c
+		self.colIndices[c.Name()] = len(self.cols)
+		self.cols = append(self.cols, c)
 	}
 }
 
 func (self *BasicRel) FindCol(name string) Col {
-	return self.lookup[name].(Col)
+	return self.cols[self.colIndices[name]]
 }
 

@@ -39,6 +39,11 @@ func (self *Cx) ExecSQL(sql string, params...interface{}) error {
 	return err
 }
 
+func (self *Cx) QueryRow(sql string, params...interface{}) pgx.Row {
+	log.Printf("%v\n%v\n", sql, params)
+	return self.conn.QueryRow(context.Background(), sql, params...)
+}
+
 func (self *Cx) SyncAll() error {
 	for _, d := range self.defs {
 		if ok, err := d.Exists(); err != nil {
@@ -53,8 +58,14 @@ func (self *Cx) SyncAll() error {
 
 func (self *Cx) DropAll() error {
 	for i := range self.defs {
-		if err := self.defs[len(self.defs)-i-1].Drop(); err != nil {
+		d := self.defs[len(self.defs)-i-1]
+		
+		if ok, err := d.Exists(); err != nil {
 			return err
+		}  else if ok {
+			if err := d.Drop(); err != nil {
+				return err
+			}
 		}
 	}
 

@@ -2,13 +2,16 @@ package data
 
 import (
 	"github.com/jackc/pgx/v4"
-	"log"
 	"reflect"
 )
 
-type Rec interface {
+type Ref interface {
 	Exists() bool
 	Table() *Table
+}
+
+type Rec interface {
+	Ref
 	DoInsert(rec Rec) error
 	DoUpdate(rec Rec) error
 }
@@ -41,6 +44,18 @@ func (self *BasicRec) DoUpdate(rec Rec) error {
 	return rec.Table().Update(rec)
 }
 
+func Load(rec Rec, row pgx.Row) error {
+	table := rec.Table()
+	cols := table.Cols()
+	fs := make([]interface{}, len(cols))
+
+	for i, c := range cols {
+		fs[i] = c.GetFieldAddr(rec)
+	}
+	
+	return row.Scan(fs...)
+}
+
 func Store(rec Rec) error {
 	if rec.Exists() {
 		return rec.DoUpdate(rec)
@@ -49,54 +64,41 @@ func Store(rec Rec) error {
 	return rec.DoInsert(rec)
 }
 
-func GetField(rec Rec, name string) reflect.Value {
-	s := reflect.ValueOf(rec)
-
-	if !s.IsValid() {
-		log.Fatal("Invalid rec: ", rec)
-	}
-
-	f := reflect.Indirect(s).FieldByName(name)
-
-	if !f.IsValid() {
-		log.Fatal("Field '%v' not found in %v", name, rec)
-	}
-
-	return f
+type RecProxy struct {
+	table *Table
+	key []interface{}
 }
 
-func GetFieldAddr(rec Rec, name string) interface{} {
-	return GetField(rec, name).Addr().Interface()
+func NewRecProxy(table *Table) *RecProxy {
+	return new(RecProxy).Init(table)
 }
 
-func GetFieldValue(rec Rec, name string) interface{} {
-	return GetField(rec, name).Interface()
-}
-
-func SetFieldValue(rec Rec, name string, val interface{}) {
-	f := GetField(rec, name)
+func (self *RecProxy) Init(table *Table) *RecProxy {
+	self.table = table
+	cs := table.primaryKey.cols
+	self.key = make([]interface{}, len(cs))
 	
-	if !f.CanSet() {
-		log.Fatal("Field '%v' not settable in %v", name, rec)
-	}
-
-	v := reflect.ValueOf(val)
-
-	if !v.IsValid() {
-		log.Fatal("Failed reflecting field '%v' in %v", name, rec)
-	}
-
-	f.Set(v)
-}
-
-func LoadFields(rec Rec, in pgx.Row) error {
-	table := rec.Table()
-	cols := table.Cols()
-	fields := make([]interface{}, len(cols))
-
-	for i, c := range cols {
-		fields[i] = GetFieldAddr(rec, c.Name())
+	for i, c := range cs {
+		self.key[i] = c.NewField()
 	}
 	
-	return in.Scan(fields...)
+	return self
+}
+
+func (self *RecProxy) Key() []interface{} {
+	out := make([]interface{}, len(self.key))
+
+	for i, v := range self.key {
+		out[i] = reflect.ValueOf(v).Elem().Interface()
+	}
+
+	return out
+}
+
+func (self *RecProxy) Exists() bool {
+	return true
+}
+
+func (self *RecProxy) Table() *Table {
+	return self.table
 }
