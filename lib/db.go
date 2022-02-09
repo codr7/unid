@@ -7,6 +7,7 @@ import (
 
 func InitDb(cx *data.Cx) error {
 	users := cx.NewTable("Users", data.NewStringCol("Name"))
+	users.AddCol(data.NewTimeCol("CreatedAt"))
 	
 	rcs := cx.NewTable("Rcs", data.NewStringCol("Name"))
 	rcs.NewForeignKey("CreatedBy", users)
