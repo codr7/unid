@@ -11,7 +11,7 @@ func init() {
 }
 
 func (self *Node) A(href string, caption string) *Node {
-	return self.NewNode("a").Set("href", href).Append(caption)
+	return self.NewNode("a").Set("href", href).Printf(caption)
 }
 
 func (self *Node) Autofocus() *Node {
@@ -19,12 +19,12 @@ func (self *Node) Autofocus() *Node {
 }
 
 func (self *Node) Br() *Node {
-	self.AppendNode(&br)
+	self.Append(&br)
 	return self
 }
 
 func (self *Node) Button(id string, caption string) *Node {
-	return self.NewNode("button").Set("id", id).Append(caption)
+	return self.NewNode("button").Set("id", id).Printf(caption)
 }
 
 func (self *Node) Div(id string) *Node {
@@ -36,12 +36,12 @@ func (self *Node) FieldSet(id string) *Node {
 }
 
 func (self *Node) H1(caption string) *Node {
-	self.NewNode("h1").Append(caption)
+	self.NewNode("h1").Printf(caption)
 	return self
 }
 
 func (self *Node) H2(caption string) *Node {
-	self.NewNode("h2").Append(caption)
+	self.NewNode("h2").Printf(caption)
 	return self
 }
 
@@ -52,7 +52,7 @@ func (self *Node) Input(id string, inputType string) *Node {
 }
 
 func (self *Node) Label(caption string) *Node {
-	return self.NewNode("label").Append(caption)
+	return self.NewNode("label").Printf(caption)
 }
 
 func (self *Node) OnChange(spec string, args...interface{}) *Node {
@@ -78,5 +78,5 @@ func (self *Node) Readonly() *Node {
 }
 
 func (self *Node) Ul(id string) *Node {
-	return self.NewNode("ul").Set("id", id).Append("")
+	return self.NewNode("ul").Set("id", id).Printf("")
 }

@@ -44,12 +44,12 @@ func (self *Node) Init(tag string) *Node {
 	return self
 }
 
-func (self *Node) Append(spec string, args...interface{}) *Node {
+func (self *Node) Printf(spec string, args...interface{}) *Node {
 	self.content = append(self.content, fmt.Sprintf(spec, args...))
 	return self
 }
 
-func (self *Node) AppendNode(node *Node) *Node {
+func (self *Node) Append(node *Node) *Node {
 	self.content = append(self.content, node)
 	return self
 }
@@ -73,7 +73,7 @@ func (self *Node) Id() interface{} {
 
 func (self *Node) NewNode(tag string) *Node {
 	n := NewNode(tag)
-	self.AppendNode(n)
+	self.Append(n)
 	return n
 }
 

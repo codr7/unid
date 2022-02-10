@@ -6,14 +6,14 @@ type Select struct {
 
 func (self *Node) Select(id string) *Select {
 	n := new(Select)
-	self.AppendNode(n.Init("select").Set("id", id))
-	n.Append("")
+	self.Append(n.Init("select").Set("id", id))
+	n.Printf("")
 	return n
 }
 
 func (self *Select) Option(value, caption string) *Node {
 	n := self.NewNode("option")
 	n.Set("value", value)
-	n.Append(caption)
+	n.Printf(caption)
 	return n
 }

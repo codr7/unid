@@ -1,6 +1,7 @@
-* add web ui
-** list resources in rcs.html
-** add caps.html
+* list db resources in rcs.html
+* add caps.html
+* add login.html
+** enable session check in views
 * use recursive CTE in GetCaps
 ** only automatic
 * implement Col.Create/Drop

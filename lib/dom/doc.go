@@ -2,7 +2,6 @@ package dom
 
 import (
 	"bytes"
-	"fmt"
 	"io"
 )
 
@@ -19,10 +18,10 @@ func NewDoc(title string) *Doc {
 
 func (self *Doc) Init(title string) *Doc {
 	self.Node.Init("html")
-	self.AppendNode(self.Head.Init("head"))
-	self.Head.AppendNode(self.Title.Init("title"))
-	self.Title.Append(title)
-	self.AppendNode(self.Body.Init("body"))
+	self.Append(self.Head.Init("head"))
+	self.Head.Append(self.Title.Init("title"))
+	self.Title.Printf(title)
+	self.Append(self.Body.Init("body"))
 	return self
 }
 
@@ -31,7 +30,7 @@ func (self *Doc) Style(href string) *Node {
 }
 
 func (self *Doc) Script(src string) *Node {
-	return self.Head.NewNode("script").Set("src", src).Append("")
+	return self.Head.NewNode("script").Set("src", src).Printf("")
 }
 
 func (self *Doc) Write(out io.Writer) error {
@@ -39,9 +38,9 @@ func (self *Doc) Write(out io.Writer) error {
 	self.WriteScript(&js)
 	
 	if js.Len() > 0 {
-		self.Head.NewNode("script").Append(
-			fmt.Sprintf("document.addEventListener('DOMContentLoaded', (event) => {\n%v\n});",
-				js.String()))
+		self.Head.NewNode("script").Printf(
+			"document.addEventListener('DOMContentLoaded', (event) => {\n%v\n});",
+			js.String())
 	}
 	
 	io.WriteString(out, "<!DOCTYPE html>\n")
