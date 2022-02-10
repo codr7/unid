@@ -3,6 +3,7 @@ package unid
 import (
 	"github.com/codr7/unid/lib/data"
 	"log"
+	"time"
 )
 
 func InitDb(cx *data.Cx) error {
@@ -64,7 +65,20 @@ func InitDb(cx *data.Cx) error {
 		
 		newRc("lodging")
 		newRc("cabins")
-		newRc("rooms")
+		rooms := newRc("rooms")
+		cs, err := rooms.GetCaps(time.Now(), MaxTime())
+
+		if err != nil {
+			return err
+		}
+		
+		cs = UpdateCaps(cs, time.Now(), MaxTime(), 10, 0)
+
+		for _, c := range cs {
+			if err := data.Store(c); err != nil {
+				return err
+			}
+		}
 	}
 
 	return nil

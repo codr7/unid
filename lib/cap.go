@@ -51,3 +51,29 @@ func (self *Cap) GetRc() (*Rc, error) {
 
 	return self.Rc.(*Rc), nil
 }
+
+func UpdateCaps(in []*Cap, startsAt, endsAt time.Time, total, used int) []*Cap {
+	var out []*Cap
+
+	for _, c := range in {
+		if c.StartsAt.Before(startsAt) {
+			prefix := *c
+			prefix.EndsAt = startsAt
+			c.StartsAt = startsAt
+			out = append(out, &prefix)
+		}
+
+		c.Total += total
+		c.Used += used
+		out = append(out, c)
+
+		if c.EndsAt.After(endsAt) {
+			suffix := *c
+			suffix.StartsAt = endsAt
+			c.EndsAt = endsAt
+			out = append(out, &suffix)
+		}
+	}
+
+	return out
+}

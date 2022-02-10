@@ -15,6 +15,8 @@ type Table struct {
 	foreignKeys []*ForeignKey
 }
 
+type StoredRec = []interface{}
+
 func (self *Table) Init(cx *Cx, name string) *Table {
 	self.BasicDef.Init(name)
 	self.BasicRel.Init()
@@ -134,6 +136,10 @@ func (self *Table) Drop() error {
 	}
 
 	return nil
+}
+
+func (self *Table) NewStoredRec() StoredRec {
+	return make(StoredRec, len(self.cols))
 }
 
 func (self *Table) Insert(rec Rec) error {

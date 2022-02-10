@@ -49,3 +49,7 @@ func (self *Rc) GetCreatedBy() (*User, error) {
 
 	return self.CreatedBy.(*User), nil
 }
+
+func (self *Rc) GetCaps(startsAt, endsAt time.Time) ([]*Cap, error) {
+	return nil, nil
+}
