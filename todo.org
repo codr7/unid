@@ -1,4 +1,5 @@
-* add dom package
+* add web ui
+** add /www
 * use recursive CTE in GetCaps
 ** only automatic
 * implement Col.Create/Drop
