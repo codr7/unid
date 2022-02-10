@@ -6,7 +6,24 @@ import (
 	"strings"
 )
 
-type Table struct {
+type Table interface {
+	RootDef
+	Rel
+
+	Cx() *Cx
+	PrimaryKey() *Key
+	NewIntCol(name string) *IntCol
+	NewStringCol(name string) *StringCol
+	NewTimeCol(name string) *TimeCol
+	NewForeignKey(name string, foreignTable Table) *ForeignKey
+	NewStoredRec() StoredRec
+	StoredRec(rec Rec) StoredRec
+	Insert(rec Rec) error
+	Update(rec Rec) error
+	Load(rec Rec) error
+}
+
+type BasicTable struct {
 	BasicDef
 	BasicRel
 
@@ -18,7 +35,7 @@ type Table struct {
 
 type StoredRec = []interface{}
 
-func (self *Table) Init(cx *Cx, name string) *Table {
+func (self *BasicTable) Init(cx *Cx, name string) *BasicTable {
 	self.BasicDef.Init(name)
 	self.BasicRel.Init()
 	self.cx = cx
@@ -26,11 +43,11 @@ func (self *Table) Init(cx *Cx, name string) *Table {
 	return self
 }
 
-func (self *Table) Cx() *Cx {
+func (self *BasicTable) Cx() *Cx {
 	return self.cx
 }
 
-func (self *Table) PrimaryKey() *Key {
+func (self *BasicTable) PrimaryKey() *Key {
 	if self.primaryKey == nil {
 		var cs []Col
 		
@@ -46,25 +63,25 @@ func (self *Table) PrimaryKey() *Key {
 	return self.primaryKey
 }
 
-func (self *Table) NewIntCol(name string) *IntCol {
+func (self *BasicTable) NewIntCol(name string) *IntCol {
 	c := new(IntCol).Init(name)
 	self.AddCol(c)
 	return c
 }
 
-func (self *Table) NewStringCol(name string) *StringCol {
+func (self *BasicTable) NewStringCol(name string) *StringCol {
 	c := new(StringCol).Init(name)
 	self.AddCol(c)
 	return c
 }
 
-func (self *Table) NewTimeCol(name string) *TimeCol {
+func (self *BasicTable) NewTimeCol(name string) *TimeCol {
 	c := new(TimeCol).Init(name)
 	self.AddCol(c)
 	return c
 }
 
-func (self *Table) NewForeignKey(name string, foreignTable *Table) *ForeignKey {
+func (self *BasicTable) NewForeignKey(name string, foreignTable Table) *ForeignKey {
 	k := new(ForeignKey).Init(fmt.Sprintf("%v%vKey", self.name, name), name, foreignTable)
 
 	for _, c := range foreignTable.PrimaryKey().Cols() {
@@ -81,7 +98,7 @@ func (self *Table) NewForeignKey(name string, foreignTable *Table) *ForeignKey {
 	return k
 }
 
-func (self *Table) Create() error {
+func (self *BasicTable) Create() error {
 	var sql strings.Builder
 	fmt.Fprintf(&sql, "CREATE TABLE \"%v\" (", self.name)
 
@@ -112,7 +129,7 @@ func (self *Table) Create() error {
 	return nil
 }
 
-func (self *Table) Exists() (bool, error) {
+func (self *BasicTable) Exists() (bool, error) {
 	sql := "SELECT EXISTS (SELECT FROM pg_tables WHERE tablename  = $1)"
 	row := self.cx.QueryRow(sql, self.name)
 	var ok bool
@@ -124,7 +141,7 @@ func (self *Table) Exists() (bool, error) {
 	return ok, nil
 }
 
-func (self *Table) Drop() error {
+func (self *BasicTable) Drop() error {
 	for _, k := range self.foreignKeys {
 		if err := k.Drop(self); err != nil {
 			return err
@@ -140,15 +157,15 @@ func (self *Table) Drop() error {
 	return nil
 }
 
-func (self *Table) NewStoredRec() StoredRec {
+func (self *BasicTable) NewStoredRec() StoredRec {
 	return make(StoredRec, len(self.cols))
 }
 
-func (self *Table) StoredRec(rec Rec) StoredRec {
+func (self *BasicTable) StoredRec(rec Rec) StoredRec {
 	return self.storedRecs[rec]
 }
 
-func (self *Table) Insert(rec Rec) error {
+func (self *BasicTable) Insert(rec Rec) error {
 	var sql strings.Builder
 	fmt.Fprintf(&sql, "INSERT INTO \"%v\" (", self.name)
 	var params []interface{}
@@ -188,7 +205,7 @@ func (self *Table) Insert(rec Rec) error {
 	return nil
 }
 
-func (self *Table) Update(rec Rec) error {
+func (self *BasicTable) Update(rec Rec) error {
 	var sql strings.Builder
 	fmt.Fprintf(&sql, "UPDATE \"%v\" SET ", self.name)
 	var params []interface{}
@@ -230,7 +247,7 @@ func (self *Table) Update(rec Rec) error {
 	return nil
 }
 
-func (self *Table) Load(rec Rec) error {
+func (self *BasicTable) Load(rec Rec) error {
 	var sql strings.Builder
 	sql.WriteString("SELECT ")
 	

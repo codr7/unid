@@ -13,8 +13,8 @@ type RootDef interface {
 
 type TableDef interface {
 	Def
-	Create(table *Table) error
-	Drop(table *Table) error
+	Create(table Table) error
+	Drop(table Table) error
 }
 
 type BasicDef struct {

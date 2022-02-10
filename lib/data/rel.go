@@ -3,6 +3,7 @@ package data
 type Rel interface {
 	Cols() []Col
 	AddCol(cols...Col)
+	FindCol(name string) Col
 }
 
 type BasicRel struct {

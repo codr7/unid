@@ -30,7 +30,7 @@ func (self *Cap) Init(cx *data.Cx) *Cap {
 	return self 
 }
 
-func (self *Cap) Table() *data.Table {
+func (self *Cap) Table() data.Table {
 	return self.Cx().FindTable("Caps")
 }
 

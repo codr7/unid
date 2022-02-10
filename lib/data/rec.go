@@ -6,7 +6,7 @@ import (
 )
 
 type Ref interface {
-	Table() *Table
+	Table() Table
 }
 
 type Rec interface {
@@ -65,15 +65,15 @@ func Store(rec Rec) error {
 }
 
 type RecProxy struct {
-	table *Table
+	table Table
 	keyFields []interface{}
 }
 
-func NewRecProxy(table *Table) *RecProxy {
+func NewRecProxy(table Table) *RecProxy {
 	return new(RecProxy).Init(table)
 }
 
-func (self *RecProxy) Init(table *Table) *RecProxy {
+func (self *RecProxy) Init(table Table) *RecProxy {
 	self.table = table
 	cs := table.PrimaryKey().cols
 	self.keyFields = make([]interface{}, len(cs))
@@ -99,7 +99,7 @@ func (self *RecProxy) Exists() bool {
 	return true
 }
 
-func (self *RecProxy) Table() *Table {
+func (self *RecProxy) Table() Table {
 	return self.table
 }
 

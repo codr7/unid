@@ -9,7 +9,7 @@ import (
 type Col interface {
 	Field
 	TableDef
-	NewForeignCol(table *Table, name string, key *ForeignKey) Col
+	NewForeignCol(table Table, name string, key *ForeignKey) Col
 	NewField() interface{}
 	ValType() string
 	IsPrimaryKey() bool
@@ -74,11 +74,11 @@ func (self *BasicCol) SetFieldValue(rec Ref, val interface{}) {
 	}
 }
 
-func (self *BasicCol) Create(table *Table) error {
+func (self *BasicCol) Create(table Table) error {
 	return nil
 }
 
-func (self *BasicCol) Drop(table *Table) error {
+func (self *BasicCol) Drop(table Table) error {
 	return nil
 }
 
@@ -103,7 +103,7 @@ func (self *IntCol) Init(name string) *IntCol {
 	return self
 }
 
-func (self *IntCol) NewForeignCol(table *Table, name string, key *ForeignKey) Col {
+func (self *IntCol) NewForeignCol(table Table, name string, key *ForeignKey) Col {
 	c := table.NewIntCol(name)
 	c.foreignKey = key
 	return c
@@ -126,7 +126,7 @@ func (self *StringCol) Init(name string) *StringCol {
 	return self
 }
 
-func (self *StringCol) NewForeignCol(table *Table, name string, key *ForeignKey) Col {
+func (self *StringCol) NewForeignCol(table Table, name string, key *ForeignKey) Col {
 	c := table.NewStringCol(name)
 	c.foreignKey = key
 	return c
@@ -150,7 +150,7 @@ func (self *TimeCol) Init(name string) *TimeCol {
 	return self
 }
 
-func (self *TimeCol) NewForeignCol(table *Table, name string, key *ForeignKey) Col {
+func (self *TimeCol) NewForeignCol(table Table, name string, key *ForeignKey) Col {
 	c := table.NewTimeCol(name)
 	c.foreignKey = key
 	return c

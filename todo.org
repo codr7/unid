@@ -1,8 +1,5 @@
-* convert Table to interface
-** add BasicTable
-** grep replace *Table/Table
-* finish GetCaps
-* add dom
+* finish Rc.GetCaps
+* add dom package
 * use recursive CTE in GetCaps
 ** only automatic
 * implement Col.Create/Drop

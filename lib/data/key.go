@@ -21,7 +21,7 @@ func (self *Key) Init(name string, cols...Col) *Key {
 	return self
 }
 
-func (self *Key) Create(table *Table) error {
+func (self *Key) Create(table Table) error {
 	ct := "UNIQUE"
 
 	if table.PrimaryKey() == self {
@@ -29,7 +29,7 @@ func (self *Key) Create(table *Table) error {
 	}
 	
 	var sql strings.Builder
-	fmt.Fprintf(&sql, "ALTER TABLE \"%v\" ADD CONSTRAINT \"%v\" %v (", table.name, self.name, ct)
+	fmt.Fprintf(&sql, "ALTER TABLE \"%v\" ADD CONSTRAINT \"%v\" %v (", table.Name(), self.name, ct)
 
 	for i, c := range self.cols {
 		if i > 0 {
@@ -48,8 +48,8 @@ func (self *Key) Create(table *Table) error {
 	return nil
 }
 
-func (self *Key) Drop(table *Table) error {
-	sql := fmt.Sprintf("ALTER TABLE \"%v\" DROP CONSTRAINT IF EXISTS \"%v\"", table.name, self.name)
+func (self *Key) Drop(table Table) error {
+	sql := fmt.Sprintf("ALTER TABLE \"%v\" DROP CONSTRAINT IF EXISTS \"%v\"", table.Name(), self.name)
 
 	if err := table.Cx().ExecSQL(sql); err != nil {
 		return err

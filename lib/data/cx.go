@@ -9,7 +9,7 @@ import (
 type Cx struct {
 	conn *pgx.Conn
 	defs []RootDef
-	tableLookup map[string]*Table
+	tableLookup map[string]Table
 }
 
 func NewCx(conn *pgx.Conn) *Cx {
@@ -18,18 +18,18 @@ func NewCx(conn *pgx.Conn) *Cx {
 
 func (self *Cx) Init(conn *pgx.Conn) *Cx {
 	self.conn = conn
-	self.tableLookup = make(map[string]*Table)
+	self.tableLookup = make(map[string]Table)
 	return self
 }
 
-func (self *Cx) NewTable(name string) *Table {
-	t := new(Table).Init(self, name)
+func (self *Cx) NewTable(name string) Table {
+	t := new(BasicTable).Init(self, name)
 	self.tableLookup[name] = t
 	self.defs = append(self.defs, t)
 	return t
 }
 
-func (self *Cx) FindTable(name string) *Table {
+func (self *Cx) FindTable(name string) Table {
 	return self.tableLookup[name]
 }
 

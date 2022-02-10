@@ -24,7 +24,7 @@ func (self *Rc) Init(cx *data.Cx) *Rc {
 	return self 
 }
 
-func (self *Rc) Table() *data.Table {
+func (self *Rc) Table() data.Table {
 	return self.Cx().FindTable("Rcs")
 }
 

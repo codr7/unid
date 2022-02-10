@@ -22,6 +22,6 @@ func (self *User) Init(cx *data.Cx) *User {
 	return self 
 }
 
-func (self *User) Table() *data.Table {
+func (self *User) Table() data.Table {
 	return self.Cx().FindTable("Users")
 }
