@@ -7,15 +7,15 @@ import (
 )
 
 func RcsView(w http.ResponseWriter, r *http.Request) {
-	/*if session := CurrentSession(w, r); session == nil {
+	if session := CurrentSession(w, r); session == nil {
 		return
-	}*/
+	}
 	
 	title := "Resources"
 	
 	d := dom.NewDoc(title)
-	d.Style("css/reset.css")
-	d.Style("css/site.css")
+	d.Style("styles/reset.css")
+	d.Style("styles/site.css")
 
 	t := d.Body.Table("resourceTable")
 	t.Tr().Td().Printf("foo")

@@ -5,7 +5,7 @@ a {
 body {
     font-family: verdana, sans-serif;
     font-size: 200%;
-    width: 98%;
+    width: 90%;
     margin-left: auto;
     margin-right: auto;
 }
@@ -19,14 +19,13 @@ button {
     letter-spacing: 1px;
     font-size: 125%;
     padding: 0.4em;
-    width: 100%;
 }
 
 h1 {
     display: block;
     font-size: 200%;
     letter-spacing: 2px;
-    color: silver;
+    color: #bfb1a8;
     margin-bottom: 0.75em;
 }
 
@@ -34,13 +33,13 @@ h2 {
     display: inline-block;
     font-size: 150%;
     letter-spacing: 2px;
-    color: silver;
+    color: #bfb1a8;
 }
 
 label {
     display: inline-block;
     letter-spacing: 1px;
-    color: silver;
+    color: #bfb1a8;
     font-size: 125%;
     margin-top: 0.5em;
     margin-bottom: 0.25em;
@@ -61,22 +60,18 @@ input[type="text"] {
     padding: 0.25em;
     margin: 0;
     box-sizing: border-box;
-    width: 100%;
 }
 
 input[type="password"] {
     font-size: 125%;
     padding: 0.25em;
     box-sizing: border-box;
-    width: 100%;
 }
 
 select {
     font-size: 125%;
     padding: 0.25em;
     box-sizing: border-box;
-    width: 100%;
-    min-width: 100%;
 }
 
 td:not(:last-child) {
@@ -94,7 +89,7 @@ textarea {
 th {
     font-size: 125%;
     letter-spacing: 1px;
-    color: silver;
+    color: #bfb1a8;
     padding: 0.5em 0;
     padding-right: 0.5em;
     text-align: left;
@@ -109,18 +104,14 @@ tr:not(:last-child) > td {
 }
 
 #frame {
-    width: 94%;
-    margin: 1% auto;
     padding: 2em;
     border-radius: 0.4em;
-    background: #993300;
-    color: white;
+    border: 1px single;
 }
 
 #table {
     margin-top: 1em;
     display: inline-block;
-    width: 100%;
 }
 
 #table > button:not(:last-child) {

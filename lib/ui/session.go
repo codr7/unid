@@ -2,6 +2,7 @@ package ui
 
 import (
 	"github.com/codr7/unid/lib"
+	"github.com/codr7/unid/lib/data"
 	"github.com/google/uuid"
 	"net/http"
 	"sync"
@@ -17,18 +18,23 @@ var (
 
 type Session struct {
 	sessionKey string
-	userName string
+	user *unid.User
+}
+
+func (self *Session) Cx() *data.Cx {
+	return self.user.Cx()
 }
 
 func (self *Session) End() {
 	sessions.Delete(self.sessionKey)
 }
 
-func StartSession(user *unid.User, w http.ResponseWriter) {
+func StartSession(user *unid.User, w http.ResponseWriter) *Session {
 	k := NewSessionKey()
-	s := &Session{sessionKey: k, userName: user.Name}
+	s := &Session{sessionKey: k, user: user}
 	sessions.Store(k, s)
 	http.SetCookie(w, &http.Cookie{Name: SESSION_COOKIE_NAME, Value: k})
+	return s
 }
 
 func NewSessionKey() string {

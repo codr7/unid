@@ -36,10 +36,10 @@ func InitDb(cx *data.Cx) error {
 			return err
 		}
 
-		admin := NewUser(cx)
-		admin.Name = "admin"
+		adm := NewUser(cx)
+		adm.Name = "adm"
 
-		if err := data.Store(admin); err != nil {
+		if err := data.Store(adm); err != nil {
 			log.Fatal(err)
 		}
 
@@ -53,7 +53,7 @@ func InitDb(cx *data.Cx) error {
 
 		newRc := func(name string) *Rc {
 			rc := NewRc(cx)
-			rc.CreatedBy = admin
+			rc.CreatedBy = adm
 			rc.Name = name
 
 			if err := data.Store(rc); err != nil {
