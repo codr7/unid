@@ -19,14 +19,18 @@ button {
     letter-spacing: 1px;
     font-size: 125%;
     padding: 0.4em;
-    color: #bfb1a8;
+    color: #bf7c2a;
+    background-color: #d9d2c6;
+    border: 1px solid;
+    border-color: #bfb1a8;
+    border-radius: 0.1em;    
 }
 
 h1 {
     display: block;
     font-size: 200%;
     letter-spacing: 2px;
-    color: #bfb1a8;
+    color: #c09c6f;
     margin-bottom: 0.75em;
 }
 
@@ -34,13 +38,13 @@ h2 {
     display: inline-block;
     font-size: 150%;
     letter-spacing: 2px;
-    color: #bfb1a8;
+    color: #c09c6f;
 }
 
 label {
     display: inline-block;
     letter-spacing: 1px;
-    color: #bfb1a8;
+    color: #bf7c2a;
     font-size: 125%;
     margin-top: 0.5em;
     margin-bottom: 0.25em;
@@ -60,12 +64,16 @@ input[type="text"] {
     padding: 0.25em;
     margin: 0;
     box-sizing: border-box;
+    border: none;
+    border-radius: 0.1em;
 }
 
 input[type="password"] {
     font-size: 125%;
     padding: 0.25em;
     box-sizing: border-box;
+    border: none;
+    border-radius: 0.1em;
 }
 
 select {

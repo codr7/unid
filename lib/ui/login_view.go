@@ -28,7 +28,7 @@ func LoginView(w http.ResponseWriter, r *http.Request) {
 	fs.Br().Input("user", "text").Autofocus()
 	fs.Br().Label("Password")
 	fs.Br().Input("password", "password")
-	b := fs.Br().Div("buttons").Button("loginButton", "Login")
+	b := fs.Br().Div("buttons").Button("loginButton", "Done")
 	b.OnClick("postJSON('login', getBody(), onLogin, onLoginError);")
 
 	if err := d.Write(w); err != nil {
