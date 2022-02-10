@@ -14,17 +14,6 @@ type Cap struct {
 	ChangedAt time.Time
 }
 
-func NewCap(cx *data.Cx, rc *Rc, startsAt, endsAt time.Time, total, used int) *Cap {
-	c := new(Cap).Init(cx)
-	c.Rc = rc
-	c.StartsAt = startsAt
-	c.EndsAt = endsAt
-	c.Total = total
-	c.Used = used
-	c.ChangedAt = time.Now()
-	return c
-}
-
 func (self *Cap) Init(cx *data.Cx) *Cap {
 	self.BasicRec.Init(cx)
 	return self 
@@ -48,15 +37,15 @@ func (self *Cap) GetRc() (*Rc, error) {
 	return self.Rc.(*Rc), nil
 }
 
-func UpdateCaps(in []*Cap, startsAt, endsAt time.Time, total, used int) []*Cap {
+func UpdateCaps(in []*Cap, rc *Rc, startsAt, endsAt time.Time, total, used int) []*Cap {
 	var out []*Cap
-
+	
 	for _, c := range in {
 		if c.StartsAt.Before(startsAt) {
-			prefix := *c
+			prefix := c
+			c = rc.NewCap(startsAt, c.EndsAt, c.Total, c.Used)
 			prefix.EndsAt = startsAt
-			c.StartsAt = startsAt
-			out = append(out, &prefix)
+			out = append(out, prefix)
 		}
 
 		c.Total += total

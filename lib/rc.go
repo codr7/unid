@@ -3,6 +3,7 @@ package unid
 import (
 	"github.com/codr7/unid/lib/data"
 	//"log"
+	"strings"
 	"time"
 )
 
@@ -29,7 +30,7 @@ func (self *Rc) Table() data.Table {
 }
 
 func (self *Rc) AfterInsert() error {
-	c := NewCap(self.Cx(), self, MinTime(), MaxTime(), 0, 0)
+	c := self.NewCap(MinTime(), MaxTime(), 0, 0)
 	return data.Store(c)
 }
 
@@ -47,8 +48,42 @@ func (self *Rc) GetCreatedBy() (*User, error) {
 	return self.CreatedBy.(*User), nil
 }
 
+func (self *Rc) NewCap(startsAt, endsAt time.Time, total, used int) *Cap {
+	c := new(Cap).Init(self.Cx())
+	c.Rc = self
+	c.StartsAt = startsAt
+	c.EndsAt = endsAt
+	c.Total = total
+	c.Used = used
+	c.ChangedAt = time.Now()
+	return c
+}
+
 func (self *Rc) GetCaps(startsAt, endsAt time.Time) ([]*Cap, error) {
-	return nil, nil
+	var sql strings.Builder
+	sql.WriteString("SELECT * ")
+	sql.WriteString("FROM \"Caps\" ")
+	sql.WriteString("WHERE \"RcName\" = $1 AND \"StartsAt\" < $2 AND \"EndsAt\" > $3")
+	rows, err := self.Cx().Query(sql.String(), self.Name, endsAt, startsAt)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+	var c Cap
+	c.Init(self.Cx())
+	var out []*Cap
+	
+	for rows.Next() {
+		if err = data.Load(&c, rows); err != nil {
+			return nil, err
+		}
+
+		out = append(out, &c)
+	}
+	
+	return out, nil
 }
 
 func (self *Rc) UpdateCaps(startsAt, endsAt time.Time, total, used int) error {
@@ -58,7 +93,7 @@ func (self *Rc) UpdateCaps(startsAt, endsAt time.Time, total, used int) error {
 		return err
 	}
 	
-	cs = UpdateCaps(cs, startsAt, endsAt, total, used)
+	cs = UpdateCaps(cs, self, startsAt, endsAt, total, used)
 
 	for _, c := range cs {
 		if err = data.Store(c); err != nil {

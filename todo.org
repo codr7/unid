@@ -1,4 +1,3 @@
-* finish Rc.GetCaps
 * add dom package
 * use recursive CTE in GetCaps
 ** only automatic

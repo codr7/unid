@@ -44,6 +44,11 @@ func (self *Cx) QueryRow(sql string, params...interface{}) pgx.Row {
 	return self.conn.QueryRow(context.Background(), sql, params...)
 }
 
+func (self *Cx) Query(sql string, params...interface{}) (pgx.Rows, error) {
+	log.Printf("%v\n%v\n", sql, params)
+	return self.conn.Query(context.Background(), sql, params...)
+}
+
 func (self *Cx) SyncAll() error {
 	for _, d := range self.defs {
 		if ok, err := d.Exists(); err != nil {

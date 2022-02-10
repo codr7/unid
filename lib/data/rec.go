@@ -1,7 +1,6 @@
 package data
 
 import (
-	"github.com/jackc/pgx/v4"
 	"reflect"
 )
 
@@ -44,16 +43,8 @@ func (self *BasicRec) DoUpdate(rec Rec) error {
 	return rec.Table().Update(rec)
 }
 
-func Load(rec Rec, row pgx.Row) error {
-	table := rec.Table()
-	cols := table.Cols()
-	fs := make([]interface{}, len(cols))
-
-	for i, c := range cols {
-		fs[i] = c.GetFieldAddr(rec)
-	}
-	
-	return row.Scan(fs...)
+func Load(rec Rec, src Source) error {
+	return rec.Table().LoadFields(rec, src)
 }
 
 func Store(rec Rec) error {

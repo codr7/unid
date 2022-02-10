@@ -12,6 +12,7 @@ type Table interface {
 
 	Cx() *Cx
 	PrimaryKey() *Key
+	ForeignKeys() []*ForeignKey
 	NewIntCol(name string) *IntCol
 	NewStringCol(name string) *StringCol
 	NewTimeCol(name string) *TimeCol
@@ -20,6 +21,7 @@ type Table interface {
 	StoredRec(rec Rec) StoredRec
 	Insert(rec Rec) error
 	Update(rec Rec) error
+	LoadFields(rec Rec, src Source) error
 	Load(rec Rec) error
 }
 
@@ -61,6 +63,10 @@ func (self *BasicTable) PrimaryKey() *Key {
 	}
 	
 	return self.primaryKey
+}
+
+func (self *BasicTable) ForeignKeys() []*ForeignKey {
+	return self.foreignKeys
 }
 
 func (self *BasicTable) NewIntCol(name string) *IntCol {
@@ -209,8 +215,9 @@ func (self *BasicTable) Update(rec Rec) error {
 	var sql strings.Builder
 	fmt.Fprintf(&sql, "UPDATE \"%v\" SET ", self.name)
 	var params []interface{}
+	i := 0
 	
-	for i, c := range self.cols {
+	for _, c := range self.cols {
 		if self.PrimaryKey().FindCol(c.Name()) != nil {
 			continue
 		}
@@ -221,6 +228,7 @@ func (self *BasicTable) Update(rec Rec) error {
 
 		params = append(params, c.GetFieldValue(rec))
 		fmt.Fprintf(&sql, "\"%v\" = $%v", c.Name(), len(params))
+		i++
 	}
 	
 	sql.WriteString(" WHERE ")
@@ -239,6 +247,35 @@ func (self *BasicTable) Update(rec Rec) error {
 	}
 
 	srec := self.storedRecs[rec]
+
+	for i, c := range self.cols {
+		srec[i] = c.GetFieldValue(rec)
+	}
+
+	return nil
+}
+
+func (self *BasicTable) LoadFields(rec Rec, src Source) error {
+	fs := make([]interface{}, len(self.cols))
+
+	for _, k := range self.foreignKeys {
+		k.SetFieldValue(rec, NewRecProxy(k.foreignTable))
+	}
+
+	for i, c := range self.cols {
+		fs[i] = c.GetFieldAddr(rec)
+	}
+	
+	if err := src.Scan(fs...); err != nil {
+		return err
+	}
+
+	srec := self.storedRecs[rec]
+
+	if srec == nil {
+		srec = self.NewStoredRec()
+		self.storedRecs[rec] = srec
+	}
 
 	for i, c := range self.cols {
 		srec[i] = c.GetFieldValue(rec)
@@ -271,31 +308,6 @@ func (self *BasicTable) Load(rec Rec) error {
 		fmt.Fprintf(&sql, "\"%v\" = $%v", c.Name(), len(params))
 	}
 
-	row := self.cx.QueryRow(sql.String(), params...)
-	var fs []interface{}
-
-	for _, k := range self.foreignKeys {
-		k.SetFieldValue(rec, NewRecProxy(k.foreignTable))
-	}
-	
-	for _, c := range self.cols {
-		fs = append(fs, c.GetFieldAddr(rec))
-	}
-
-	if err := row.Scan(fs...); err != nil {
-		return err
-	}
-
-	srec := self.storedRecs[rec]
-
-	if srec == nil {
-		srec = self.NewStoredRec()
-		self.storedRecs[rec] = srec
-	}
-
-	for i, c := range self.cols {
-		srec[i] = c.GetFieldValue(rec)
-	}
-
-	return nil
+	src := self.cx.QueryRow(sql.String(), params...)
+	return self.LoadFields(rec, src)
 }
