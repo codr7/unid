@@ -14,16 +14,13 @@ type Rc struct {
 }
 
 func NewRc(cx *data.Cx) *Rc {
-	return new(Rc).Init(cx, false)
+	rc := new(Rc).Init(cx)
+	rc.CreatedAt = time.Now()
+	return rc
 }
 
-func (self *Rc) Init(cx *data.Cx, exists bool) *Rc {
-	self.BasicRec.Init(cx, exists)
-
-	if !exists {
-		self.CreatedAt = time.Now()
-	}
-	
+func (self *Rc) Init(cx *data.Cx) *Rc {
+	self.BasicRec.Init(cx)
 	return self 
 }
 
@@ -38,7 +35,7 @@ func (self *Rc) AfterInsert() error {
 
 func (self *Rc) GetCreatedBy() (*User, error) {
 	if p, ok := self.CreatedBy.(*data.RecProxy); ok {
-		out := new(User).Init(self.Cx(), true)
+		out := new(User).Init(self.Cx())
 		
 		if _, err := p.Load(out); err != nil {
 			return nil, err

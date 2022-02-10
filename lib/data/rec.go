@@ -6,7 +6,6 @@ import (
 )
 
 type Ref interface {
-	Exists() bool
 	Table() *Table
 }
 
@@ -19,20 +18,14 @@ type Rec interface {
 
 type BasicRec struct {
 	cx *Cx
-	exists bool
 }
 
-func (self *BasicRec) Init(cx *Cx, exists bool) {
+func (self *BasicRec) Init(cx *Cx) {
 	self.cx = cx
-	self.exists = exists
 }
 
 func (self *BasicRec) Cx() *Cx {
 	return self.cx
-}
-
-func (self *BasicRec) Exists() bool {
-	return self.exists
 }
 
 func (self *BasicRec) AfterInsert() error {
@@ -44,12 +37,10 @@ func (self *BasicRec) DoInsert(rec Rec) error {
 		return err
 	}
 
-	self.exists = true
 	return rec.AfterInsert()
 }
 
 func (self *BasicRec) DoUpdate(rec Rec) error {
-	self.exists = false
 	return rec.Table().Update(rec)
 }
 
@@ -66,7 +57,7 @@ func Load(rec Rec, row pgx.Row) error {
 }
 
 func Store(rec Rec) error {
-	if rec.Exists() {
+	if srec := rec.Table().StoredRec(rec); srec != nil {
 		return rec.DoUpdate(rec)
 	}
 

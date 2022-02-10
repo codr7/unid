@@ -12,16 +12,13 @@ type User struct {
 }
 
 func NewUser(cx *data.Cx) *User {
-	return new(User).Init(cx, false)
+	u := new(User).Init(cx)
+	u.CreatedAt = time.Now()
+	return u
 }
 
-func (self *User) Init(cx *data.Cx, exists bool) *User {
-	self.BasicRec.Init(cx, exists)
-
-	if !exists {
-		self.CreatedAt = time.Now()
-	}
-
+func (self *User) Init(cx *data.Cx) *User {
+	self.BasicRec.Init(cx)
 	return self 
 }
 

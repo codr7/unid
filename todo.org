@@ -1,5 +1,3 @@
-* remove Rec.exists
-** add Table.storedRecs
 * convert Table to interface
 ** add BasicTable
 ** grep replace *Table/Table
@@ -15,23 +13,3 @@
 ** unidys
 ** cx.NewEnum
 ** name/alts
-
-
-(defun update-caps (in &key (starts-at (now)) (ends-at *max-timestamp*) (total 0) (used 0))
-  (let (out)
-    (dolist (c in)
-      (when (timestamp< (cap-starts-at c) starts-at)
-	(let* ((prefix c))
-	  (setf c (model-clone c 'starts-at starts-at))
-	  (setf (cap-ends-at prefix) starts-at)
-	  (push prefix out))
-	
-	(incf (cap-total c) total)
-	(incf (cap-used c) used)
-	(push c out)
-
-	(when (timestamp> (cap-ends-at c) ends-at)
-	  (let ((suffix (model-clone c 'starts-at ends-at)))
-	    (setf (cap-ends-at c) ends-at)
-	    (push suffix out)))))
-    out))

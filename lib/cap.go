@@ -15,22 +15,18 @@ type Cap struct {
 }
 
 func NewCap(cx *data.Cx, rc *Rc, startsAt, endsAt time.Time, total, used int) *Cap {
-	c := new(Cap).Init(cx, false)
+	c := new(Cap).Init(cx)
 	c.Rc = rc
 	c.StartsAt = startsAt
 	c.EndsAt = endsAt
 	c.Total = total
 	c.Used = used
+	c.ChangedAt = time.Now()
 	return c
 }
 
-func (self *Cap) Init(cx *data.Cx, exists bool) *Cap {
-	self.BasicRec.Init(cx, exists)
-
-	if !exists {
-		self.ChangedAt = time.Now()
-	}
-
+func (self *Cap) Init(cx *data.Cx) *Cap {
+	self.BasicRec.Init(cx)
 	return self 
 }
 
@@ -40,7 +36,7 @@ func (self *Cap) Table() *data.Table {
 
 func (self *Cap) GetRc() (*Rc, error) {
 	if p, ok := self.Rc.(*data.RecProxy); ok {
-		out := new(Rc).Init(self.Cx(), true)
+		out := new(Rc).Init(self.Cx())
 		
 		if _, err := p.Load(out); err != nil {
 			return nil, err

@@ -13,6 +13,7 @@ type Table struct {
 	cx *Cx
 	primaryKey *Key
 	foreignKeys []*ForeignKey
+	storedRecs map[Rec]StoredRec
 }
 
 type StoredRec = []interface{}
@@ -21,6 +22,7 @@ func (self *Table) Init(cx *Cx, name string) *Table {
 	self.BasicDef.Init(name)
 	self.BasicRel.Init()
 	self.cx = cx
+	self.storedRecs = make(map[Rec]StoredRec)
 	return self
 }
 
@@ -142,6 +144,10 @@ func (self *Table) NewStoredRec() StoredRec {
 	return make(StoredRec, len(self.cols))
 }
 
+func (self *Table) StoredRec(rec Rec) StoredRec {
+	return self.storedRecs[rec]
+}
+
 func (self *Table) Insert(rec Rec) error {
 	var sql strings.Builder
 	fmt.Fprintf(&sql, "INSERT INTO \"%v\" (", self.name)
@@ -172,6 +178,13 @@ func (self *Table) Insert(rec Rec) error {
 		return err
 	}
 
+	srec := self.NewStoredRec()
+
+	for i, c := range self.cols {
+		srec[i] = c.GetFieldValue(rec)
+	}
+
+	self.storedRecs[rec] = srec
 	return nil
 }
 
@@ -206,6 +219,12 @@ func (self *Table) Update(rec Rec) error {
 
 	if err := self.cx.ExecSQL(sql.String(), params...); err != nil {
 		return err
+	}
+
+	srec := self.storedRecs[rec]
+
+	for i, c := range self.cols {
+		srec[i] = c.GetFieldValue(rec)
 	}
 
 	return nil
@@ -246,5 +265,20 @@ func (self *Table) Load(rec Rec) error {
 		fs = append(fs, c.GetFieldAddr(rec))
 	}
 
-	return row.Scan(fs...)
+	if err := row.Scan(fs...); err != nil {
+		return err
+	}
+
+	srec := self.storedRecs[rec]
+
+	if srec == nil {
+		srec = self.NewStoredRec()
+		self.storedRecs[rec] = srec
+	}
+
+	for i, c := range self.cols {
+		srec[i] = c.GetFieldValue(rec)
+	}
+
+	return nil
 }
