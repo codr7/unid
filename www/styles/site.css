@@ -5,7 +5,7 @@ a {
 body {
     font-family: verdana, sans-serif;
     font-size: 200%;
-    width: 90%;
+    width: 96%;
     margin-left: auto;
     margin-right: auto;
 }
@@ -19,6 +19,7 @@ button {
     letter-spacing: 1px;
     font-size: 125%;
     padding: 0.4em;
+    color: #bfb1a8;
 }
 
 h1 {
@@ -52,7 +53,6 @@ input[type="checkbox"] {
 input:read-only {
     background-color: inherit;
     border: none;
-    color: white;
 }
 
 input[type="text"] {
@@ -104,9 +104,9 @@ tr:not(:last-child) > td {
 }
 
 #frame {
-    padding: 2em;
+    padding: 1em;
     border-radius: 0.4em;
-    border: 1px single;
+    background-color: #d9d2c6;
 }
 
 #table {
