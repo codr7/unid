@@ -66,18 +66,9 @@ func InitDb(cx *data.Cx) error {
 		newRc("lodging")
 		newRc("cabins")
 		rooms := newRc("rooms")
-		cs, err := rooms.GetCaps(time.Now(), MaxTime())
 
-		if err != nil {
+		if err := rooms.UpdateCaps(time.Now(), MaxTime(), 10, 0); err != nil {
 			return err
-		}
-		
-		cs = UpdateCaps(cs, time.Now(), MaxTime(), 10, 0)
-
-		for _, c := range cs {
-			if err := data.Store(c); err != nil {
-				return err
-			}
 		}
 	}
 

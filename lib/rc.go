@@ -50,3 +50,21 @@ func (self *Rc) GetCreatedBy() (*User, error) {
 func (self *Rc) GetCaps(startsAt, endsAt time.Time) ([]*Cap, error) {
 	return nil, nil
 }
+
+func (self *Rc) UpdateCaps(startsAt, endsAt time.Time, total, used int) error {
+	cs, err := self.GetCaps(startsAt, endsAt)
+
+	if err != nil {
+		return err
+	}
+	
+	cs = UpdateCaps(cs, startsAt, endsAt, total, used)
+
+	for _, c := range cs {
+		if err = data.Store(c); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
