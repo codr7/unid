@@ -44,8 +44,11 @@ func UpdateCaps(in []*Cap, rc *Rc, startsAt, endsAt time.Time, total, used int) 
 		if c.StartsAt.Before(startsAt) {
 			prefix := c
 			c = rc.NewCap(startsAt, c.EndsAt, c.Total, c.Used)
+			prefix.ChangedAt = time.Now()
 			prefix.EndsAt = startsAt
 			out = append(out, prefix)
+		} else {
+			c.ChangedAt = time.Now()
 		}
 
 		c.Total += total
@@ -55,6 +58,7 @@ func UpdateCaps(in []*Cap, rc *Rc, startsAt, endsAt time.Time, total, used int) 
 		if c.EndsAt.After(endsAt) {
 			suffix := *c
 			suffix.StartsAt = endsAt
+			suffix.ChangedAt = time.Now()
 			c.EndsAt = endsAt
 			out = append(out, &suffix)
 		}
