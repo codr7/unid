@@ -1,9 +1,15 @@
 package data
 
+import (
+	"io"
+)
+
 type Rel interface {
 	Cols() []Col
 	AddCol(cols...Col)
 	FindCol(name string) Col
+	WriteRelSql(out io.Writer) error
+	RelParams() []interface{}
 }
 
 type BasicRel struct {

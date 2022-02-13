@@ -2,6 +2,7 @@ package data
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"strings"
 )
@@ -23,6 +24,7 @@ type Table interface {
 	Update(rec Rec) error
 	LoadFields(rec Rec, src Source) error
 	Load(rec Rec) error
+	Query() *Query
 }
 
 type BasicTable struct {
@@ -311,3 +313,17 @@ func (self *BasicTable) Load(rec Rec) error {
 	src := self.cx.QueryRow(sql.String(), params...)
 	return self.LoadFields(rec, src)
 }
+
+func (self *BasicTable) Query() *Query {
+	return NewQuery(self.cx).Select(self.cols...).From(self)
+}
+
+func (self *BasicTable) WriteRelSql(out io.Writer) error {
+	_, err := fmt.Fprintf(out, "\"%s\"", self.name)
+	return err
+}
+
+func (self *BasicTable) RelParams() []interface{} {
+	return nil
+}
+
