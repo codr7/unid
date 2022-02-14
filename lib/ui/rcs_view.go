@@ -29,7 +29,8 @@ func RcsView(w http.ResponseWriter, r *http.Request) {
 	t := fs.Table("rcsTable")
 	tr := t.Tr()
 	tr.Th().Printf("Name")
-	tr.Th().Printf("Created @")
+	tr.Th().Printf("Created")
+	tr.Th().Printf("by")
 	rcs := cx.FindTable("Rcs")
 	q := rcs.Query().OrderBy(rcs.FindCol("Name"))
 	
@@ -53,6 +54,7 @@ func RcsView(w http.ResponseWriter, r *http.Request) {
 		tr = t.Tr()
 		tr.Td().Printf(rc.Name)
 		tr.Td().Printf(rc.CreatedAt.Format(session.TimeFormat()))
+		tr.Td().Printf("%v", rc.CreatedBy.(*data.RecProxy).KeyVals()[0])
 	}
 	
 	if err := d.Write(w); err != nil {
