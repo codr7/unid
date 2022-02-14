@@ -1,17 +1,17 @@
 package data
 
 import (
-	"fmt"
 	"github.com/jackc/pgx/v4"
 	"strings"
 )
 
 type Query struct {
-	BasicRel
 	cx *Cx
+	vals []Val
 	from []Rel
 	conds []Cond
 	rows pgx.Rows
+	order []Val
 }
 
 func NewQuery(cx *Cx) *Query {
@@ -23,8 +23,8 @@ func (self *Query) Init(cx *Cx) *Query {
 	return self
 }
 
-func (self *Query) Select(in...Col) *Query {
-	self.cols = append(self.cols, in...)
+func (self *Query) Select(in...Val) *Query {
+	self.vals = append(self.vals, in...)
 	return self
 }
 
@@ -38,17 +38,23 @@ func (self *Query) Where(in...Cond) *Query {
 	return self
 }
 
+func (self *Query) OrderBy(in...Val) *Query {
+	self.order = append(self.order, in...)
+	return self
+}
+
 func (self *Query) Run() error {
 	var sql strings.Builder
 	var params []interface{}
 	sql.WriteString("SELECT ")
 	
-	for i, c := range self.cols {
+	for i, v := range self.vals {
 		if i > 0 {
 			sql.WriteString(", ")
 		}
 
-		fmt.Fprintf(&sql, "\"%v\"", c.Name())
+		v.WriteValSql(&sql)
+		params = append(params, v.ValParams()...)
 	}
 
 	sql.WriteString(" FROM ")
@@ -78,6 +84,19 @@ func (self *Query) Run() error {
 			}
 			
 			params = append(params, c.CondParams()...)
+		}
+	}
+
+	if self.order != nil {
+		sql.WriteString(" ORDER BY ")
+
+		for i, v := range self.order {
+			if i > 0 {
+				sql.WriteString(", ")
+			}
+
+			v.WriteValSql(&sql)
+			params = append(params, v.ValParams()...)
 		}
 	}
 

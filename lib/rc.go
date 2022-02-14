@@ -59,7 +59,7 @@ func (self *Rc) NewCap(startsAt, endsAt time.Time, total, used int) *Cap {
 	return c
 }
 
-func (self *Rc) GetCaps(startsAt, endsAt time.Time) ([]*Cap, error) {
+func (self *Rc) Caps(startsAt, endsAt time.Time) ([]*Cap, error) {
 	var sql strings.Builder
 	sql.WriteString("SELECT * ")
 	sql.WriteString("FROM \"Caps\" ")
@@ -87,7 +87,7 @@ func (self *Rc) GetCaps(startsAt, endsAt time.Time) ([]*Cap, error) {
 }
 
 func (self *Rc) UpdateCaps(startsAt, endsAt time.Time, total, used int) error {
-	cs, err := self.GetCaps(startsAt, endsAt)
+	cs, err := self.Caps(startsAt, endsAt)
 
 	if err != nil {
 		return err

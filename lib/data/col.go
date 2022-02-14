@@ -1,6 +1,8 @@
 package data
 
 import (
+	"fmt"
+	"io"
 	//"log"
 	"reflect"
 	"time"
@@ -9,6 +11,8 @@ import (
 type Col interface {
 	Field
 	TableDef
+	Val
+	
 	NewForeignCol(table Table, name string, key *ForeignKey) Col
 	NewField() interface{}
 	ValType() string
@@ -92,6 +96,15 @@ func (self *BasicCol) SetPrimaryKey(val bool) {
 
 func (self *BasicCol) ForeignKey() *ForeignKey {
 	return self.foreignKey
+}
+
+func (self *BasicCol) WriteValSql(out io.Writer) error {
+	_, err :=fmt.Fprintf(out, "\"%v\"", self.name)
+	return err
+}
+
+func (self *BasicCol) ValParams() []interface{} {
+	return nil
 }
 
 type IntCol struct {

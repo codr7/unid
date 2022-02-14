@@ -6,8 +6,8 @@ import (
 )
 
 type Key struct {
+	BasicCols
 	BasicDef
-	BasicRel
 }
 
 func NewKey(name string, cols...Col) *Key {
@@ -15,8 +15,8 @@ func NewKey(name string, cols...Col) *Key {
 }
 
 func (self *Key) Init(name string, cols...Col) *Key {
+	self.BasicCols.Init()
 	self.BasicDef.Init(name)
-	self.BasicRel.Init()
 	self.AddCol(cols...)
 	return self
 }

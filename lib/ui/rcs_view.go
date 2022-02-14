@@ -30,7 +30,8 @@ func RcsView(w http.ResponseWriter, r *http.Request) {
 	tr := t.Tr()
 	tr.Th().Printf("Name")
 	tr.Th().Printf("Created @")
-	q := cx.FindTable("Rcs").Query()
+	rcs := cx.FindTable("Rcs")
+	q := rcs.Query().OrderBy(rcs.FindCol("Name"))
 	
 	if err := q.Run(); err != nil {
 		http.Error(w,

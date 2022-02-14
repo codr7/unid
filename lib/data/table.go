@@ -8,6 +8,7 @@ import (
 )
 
 type Table interface {
+	Cols
 	RootDef
 	Rel
 
@@ -28,8 +29,8 @@ type Table interface {
 }
 
 type BasicTable struct {
+	BasicCols
 	BasicDef
-	BasicRel
 
 	cx *Cx
 	primaryKey *Key
@@ -40,8 +41,8 @@ type BasicTable struct {
 type StoredRec = []interface{}
 
 func (self *BasicTable) Init(cx *Cx, name string) *BasicTable {
+	self.BasicCols.Init()
 	self.BasicDef.Init(name)
-	self.BasicRel.Init()
 	self.cx = cx
 	self.storedRecs = make(map[Rec]StoredRec)
 	return self
@@ -315,7 +316,13 @@ func (self *BasicTable) Load(rec Rec) error {
 }
 
 func (self *BasicTable) Query() *Query {
-	return NewQuery(self.cx).Select(self.cols...).From(self)
+	q := NewQuery(self.cx).From(self)
+
+	for _, c := range self.cols {
+		q.Select(c)
+	}
+
+	return q
 }
 
 func (self *BasicTable) WriteRelSql(out io.Writer) error {
