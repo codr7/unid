@@ -41,6 +41,8 @@ func RcsView(w http.ResponseWriter, r *http.Request) {
 
 		return
 	}
+
+	defer q.Close()
 	
 	for q.Next() {
 		rc := unid.NewRc(cx)

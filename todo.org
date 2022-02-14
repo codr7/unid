@@ -1,20 +1,29 @@
-* use Query in Rc.Caps
-* add caps.html
 * rename data package to db
-* use recursive CTE in GetCaps
-** only automatic
-* implement Col.Create/Drop
-** add Table.Sync
-*** sync all columns/keys
-*** call from Cx.SyncAll if exists
+** restart emacs
 * add data.Enum
 ** unidys
 ** cx.NewEnum
 ** name/alts
-** add RcType/Rc.Type
-*** FIXED/AUTOMATIC/UNLIMITED
-**** only include automatic parent rcs in Rc.Caps()
-**** inc total on resv if unlimited
+** add RcCapType/Rc.CapType
+*** FREE/POOL/UNIT
+**** only include POOL parent rcs in Rc.Caps()
+*** Show cap type in rcs view
+**** capitalize
+* add Pools
+*** PoolParent PoolChild
+** list Pools comma separated in RcsView
+** use in GetCaps
+* add CapsView
+* add RcView
+* add Res type
+** Id, Caption, Details, StartsAt, EndsAt, Quantity, Rc
+** inc Cap.Total on resv if Rc.CapType = FREE
+** add ResView
+*** mode=EDIT/VIEW
+* implement Col.Create/Drop
+** add Table.Sync
+*** sync all columns/keys
+*** call from Cx.SyncAll if exists
 
 #d9d2c6
 #bfb1a8

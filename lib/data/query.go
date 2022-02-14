@@ -1,6 +1,7 @@
 package data
 
 import (
+	"fmt"
 	"github.com/jackc/pgx/v4"
 	"strings"
 )
@@ -41,6 +42,23 @@ func (self *Query) Where(in...Cond) *Query {
 func (self *Query) OrderBy(in...Val) *Query {
 	self.order = append(self.order, in...)
 	return self
+}
+
+func IndexParams(sql string) string {
+	n := 1
+	
+	for {
+		i := strings.Index(sql, "$$")
+
+		if i == -1 {
+			break
+		}
+
+		sql = strings.Replace(sql, "$$", fmt.Sprintf("$%v", n), 1)
+		n++
+	}
+
+	return sql
 }
 
 func (self *Query) Run() error {
@@ -101,7 +119,7 @@ func (self *Query) Run() error {
 	}
 
 	var err error
-	self.rows, err = self.cx.Query(sql.String(), params...)
+	self.rows, err = self.cx.Query(IndexParams(sql.String()), params...)
 	return err
 }
 
@@ -111,4 +129,8 @@ func (self *Query) Next() bool {
 
 func (self *Query) Scan(dst...interface{}) error {
 	return self.rows.Scan(dst...)
+}
+
+func (self *Query) Close() {
+	self.rows.Close()
 }

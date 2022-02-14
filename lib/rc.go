@@ -3,7 +3,6 @@ package unid
 import (
 	"github.com/codr7/unid/lib/data"
 	//"log"
-	"strings"
 	"time"
 )
 
@@ -60,23 +59,24 @@ func (self *Rc) NewCap(startsAt, endsAt time.Time, total, used int) *Cap {
 }
 
 func (self *Rc) Caps(startsAt, endsAt time.Time) ([]*Cap, error) {
-	var sql strings.Builder
-	sql.WriteString("SELECT * ")
-	sql.WriteString("FROM \"Caps\" ")
-	sql.WriteString("WHERE \"RcName\" = $1 AND \"StartsAt\" < $2 AND \"EndsAt\" > $3")
-	rows, err := self.Cx().Query(sql.String(), self.Name, endsAt, startsAt)
-
-	if err != nil {
+	cx := self.Cx()
+	caps := cx.FindTable("Caps")
+	q := caps.Query().
+		Where(data.Eq(caps.FindCol("RcName"), self.Name),
+			data.Lt(caps.FindCol("StartsAt"), endsAt),
+			data.Gt(caps.FindCol("EndsAt"), startsAt))
+		
+	if err := q.Run(); err != nil {
 		return nil, err
 	}
 
-	defer rows.Close()
+	defer q.Close()
 	var c Cap
 	c.Init(self.Cx())
 	var out []*Cap
 	
-	for rows.Next() {
-		if err = data.Load(&c, rows); err != nil {
+	for q.Next() {
+		if err := data.Load(&c, q); err != nil {
 			return nil, err
 		}
 

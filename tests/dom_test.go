@@ -10,9 +10,9 @@ import (
 func TestDomNode(t *testing.T) {
 	d := dom.NewNode("html")
 	h := d.NewNode("head")
-	h.NewNode("title").Append("Foo")
+	h.NewNode("title").Printf("Foo")
 	b := d.NewNode("body")
-	b.NewNode("a").Set("href", "http://foo.com").Append("Home")
+	b.NewNode("a").Set("href", "http://foo.com").Printf("Home")
 
 	var out bytes.Buffer
 	d.Write(&out)
