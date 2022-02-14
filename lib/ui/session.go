@@ -25,6 +25,10 @@ func (self *Session) Cx() *data.Cx {
 	return self.user.Cx()
 }
 
+func (self *Session) TimeFormat() string {
+	return "2006-01-02 15:04"
+}
+
 func (self *Session) End() {
 	sessions.Delete(self.sessionKey)
 }

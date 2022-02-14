@@ -52,7 +52,7 @@ func RcsView(w http.ResponseWriter, r *http.Request) {
 
 		tr = t.Tr()
 		tr.Td().Printf(rc.Name)
-		tr.Td().Printf(rc.CreatedAt.String())
+		tr.Td().Printf(rc.CreatedAt.Format(session.TimeFormat()))
 	}
 	
 	if err := d.Write(w); err != nil {

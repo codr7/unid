@@ -1,5 +1,3 @@
-* improve time formatting in rcs view
-** add unid.TimeFormat
 * use Query in Rc.Caps
 * add caps.html
 * rename data package to db
