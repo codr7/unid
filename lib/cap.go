@@ -1,30 +1,30 @@
 package unid
 
 import (
-	"github.com/codr7/unid/lib/data"
+	"github.com/codr7/unid/lib/db"
 	//"log"
 	"time"
 )
 
 type Cap struct {
-	data.BasicRec
-	Rc data.Ref
+	db.BasicRec
+	Rc db.Ref
 	StartsAt, EndsAt time.Time
 	Total, Used int
 	ChangedAt time.Time
 }
 
-func (self *Cap) Init(cx *data.Cx) *Cap {
+func (self *Cap) Init(cx *db.Cx) *Cap {
 	self.BasicRec.Init(cx)
 	return self 
 }
 
-func (self *Cap) Table() data.Table {
+func (self *Cap) Table() db.Table {
 	return self.Cx().FindTable("Caps")
 }
 
 func (self *Cap) GetRc() (*Rc, error) {
-	if p, ok := self.Rc.(*data.RecProxy); ok {
+	if p, ok := self.Rc.(*db.RecProxy); ok {
 		out := new(Rc).Init(self.Cx())
 		
 		if _, err := p.Load(out); err != nil {

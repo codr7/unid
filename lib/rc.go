@@ -1,40 +1,40 @@
 package unid
 
 import (
-	"github.com/codr7/unid/lib/data"
+	"github.com/codr7/unid/lib/db"
 	//"log"
 	"time"
 )
 
 type Rc struct {
-	data.BasicRec
+	db.BasicRec
 	Name string
 	CreatedAt time.Time
-	CreatedBy data.Ref
+	CreatedBy db.Ref
 }
 
-func NewRc(cx *data.Cx) *Rc {
+func NewRc(cx *db.Cx) *Rc {
 	rc := new(Rc).Init(cx)
 	rc.CreatedAt = time.Now()
 	return rc
 }
 
-func (self *Rc) Init(cx *data.Cx) *Rc {
+func (self *Rc) Init(cx *db.Cx) *Rc {
 	self.BasicRec.Init(cx)
 	return self 
 }
 
-func (self *Rc) Table() data.Table {
+func (self *Rc) Table() db.Table {
 	return self.Cx().FindTable("Rcs")
 }
 
 func (self *Rc) AfterInsert() error {
 	c := self.NewCap(MinTime(), MaxTime(), 0, 0)
-	return data.Store(c)
+	return db.Store(c)
 }
 
 func (self *Rc) GetCreatedBy() (*User, error) {
-	if p, ok := self.CreatedBy.(*data.RecProxy); ok {
+	if p, ok := self.CreatedBy.(*db.RecProxy); ok {
 		out := new(User).Init(self.Cx())
 		
 		if _, err := p.Load(out); err != nil {
@@ -62,9 +62,9 @@ func (self *Rc) Caps(startsAt, endsAt time.Time) ([]*Cap, error) {
 	cx := self.Cx()
 	caps := cx.FindTable("Caps")
 	q := caps.Query().
-		Where(data.Eq(caps.FindCol("RcName"), self.Name),
-			data.Lt(caps.FindCol("StartsAt"), endsAt),
-			data.Gt(caps.FindCol("EndsAt"), startsAt))
+		Where(db.Eq(caps.FindCol("RcName"), self.Name),
+			db.Lt(caps.FindCol("StartsAt"), endsAt),
+			db.Gt(caps.FindCol("EndsAt"), startsAt))
 		
 	if err := q.Run(); err != nil {
 		return nil, err
@@ -76,7 +76,7 @@ func (self *Rc) Caps(startsAt, endsAt time.Time) ([]*Cap, error) {
 	var out []*Cap
 	
 	for q.Next() {
-		if err := data.Load(&c, q); err != nil {
+		if err := db.Load(&c, q); err != nil {
 			return nil, err
 		}
 
@@ -96,7 +96,7 @@ func (self *Rc) UpdateCaps(startsAt, endsAt time.Time, total, used int) error {
 	cs = UpdateCaps(cs, self, startsAt, endsAt, total, used)
 
 	for _, c := range cs {
-		if err = data.Store(c); err != nil {
+		if err = db.Store(c); err != nil {
 			return err
 		}
 	}

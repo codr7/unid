@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/codr7/unid/lib"
-	"github.com/codr7/unid/lib/data"
+	"github.com/codr7/unid/lib/db"
 	"github.com/codr7/unid/lib/dom"
 	"github.com/jackc/pgx/v4"
 	"log"
@@ -36,13 +36,13 @@ func LoginView(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-type LoginData struct {
+type LoginDb struct {
 	User string
 	Password string
 }
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
-	var in LoginData
+	var in LoginDb
 	
 	if err := json.NewDecoder(r.Body).Decode(&in); err != nil {
 		http.Error(w, fmt.Sprintf("Failed decoding json: %v", err), http.StatusBadRequest)
@@ -54,17 +54,17 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	
 	if err != nil {
 		http.Error(w,
-			fmt.Sprintf("Failed connecting to database: %v", err),
+			fmt.Sprintf("Failed connecting to dbbase: %v", err),
 			http.StatusInternalServerError)
 
 		return
 	}
 	
-	cx := data.NewCx(dbc)
+	cx := db.NewCx(dbc)
 	
 	if err := unid.InitDb(cx); err != nil {
 		http.Error(w,
-			fmt.Sprintf("Failed initializing database: %v", err),
+			fmt.Sprintf("Failed initializing dbbase: %v", err),
 			http.StatusInternalServerError)
 
 		return
@@ -72,7 +72,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	
 	if err := cx.SyncAll(); err != nil {
 		http.Error(w,
-			fmt.Sprintf("Failed syncing database: %v", err),
+			fmt.Sprintf("Failed syncing dbbase: %v", err),
 			http.StatusInternalServerError)
 
 		return

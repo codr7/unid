@@ -3,7 +3,7 @@ package ui
 import (
 	"fmt"
 	"github.com/codr7/unid/lib"
-	"github.com/codr7/unid/lib/data"
+	"github.com/codr7/unid/lib/db"
 	"github.com/codr7/unid/lib/dom"
 	"log"
 	"net/http"
@@ -47,7 +47,7 @@ func RcsView(w http.ResponseWriter, r *http.Request) {
 	for q.Next() {
 		rc := unid.NewRc(cx)
 
-		if err := data.Load(rc, q); err != nil {
+		if err := db.Load(rc, q); err != nil {
 			http.Error(w,
 				fmt.Sprintf("Failed loading resource: %v", err),
 				http.StatusInternalServerError)
@@ -56,7 +56,7 @@ func RcsView(w http.ResponseWriter, r *http.Request) {
 		tr = t.Tr()
 		tr.Td().Printf(rc.Name)
 		tr.Td().Printf(rc.CreatedAt.Format(session.TimeFormat()))
-		tr.Td().Printf("%v", rc.CreatedBy.(*data.RecProxy).KeyVals()[0])
+		tr.Td().Printf("%v", rc.CreatedBy.(*db.RecProxy).KeyVals()[0])
 	}
 	
 	if err := d.Write(w); err != nil {

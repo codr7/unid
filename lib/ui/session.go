@@ -2,7 +2,7 @@ package ui
 
 import (
 	"github.com/codr7/unid/lib"
-	"github.com/codr7/unid/lib/data"
+	"github.com/codr7/unid/lib/db"
 	"github.com/google/uuid"
 	"net/http"
 	"sync"
@@ -21,7 +21,7 @@ type Session struct {
 	user *unid.User
 }
 
-func (self *Session) Cx() *data.Cx {
+func (self *Session) Cx() *db.Cx {
 	return self.user.Cx()
 }
 

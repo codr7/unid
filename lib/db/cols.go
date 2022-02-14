@@ -1,4 +1,4 @@
-package data
+package db
 
 type Cols interface {
 	Cols() []Col

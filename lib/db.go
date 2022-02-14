@@ -1,12 +1,12 @@
 package unid
 
 import (
-	"github.com/codr7/unid/lib/data"
+	"github.com/codr7/unid/lib/db"
 	"log"
 	"time"
 )
 
-func InitDb(cx *data.Cx) error {
+func InitDb(cx *db.Cx) error {
 	users := cx.NewTable("Users")
 	users.NewStringCol("Name").SetPrimaryKey(true)
 	users.NewTimeCol("CreatedAt")
@@ -39,7 +39,7 @@ func InitDb(cx *data.Cx) error {
 		adm := NewUser(cx)
 		adm.Name = "adm"
 
-		if err := data.Store(adm); err != nil {
+		if err := db.Store(adm); err != nil {
 			log.Fatal(err)
 		}
 
@@ -56,7 +56,7 @@ func InitDb(cx *data.Cx) error {
 			rc.CreatedBy = adm
 			rc.Name = name
 
-			if err := data.Store(rc); err != nil {
+			if err := db.Store(rc); err != nil {
 				log.Fatal(err)
 			}
 

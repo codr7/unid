@@ -1,6 +1,4 @@
-* rename data package to db
-** restart emacs
-* add data.Enum
+* add db.Enum
 ** unidys
 ** cx.NewEnum
 ** name/alts
@@ -11,15 +9,20 @@
 **** capitalize
 * add Pools
 *** PoolParent PoolChild
+*** Both primary
 ** list Pools comma separated in RcsView
 ** use in GetCaps
 * add CapsView
 * add RcView
+** edit=t/f
 * add Res type
-** Id, Caption, Details, StartsAt, EndsAt, Quantity, Rc
+** Id (init from seq), Caption, Details, StartsAt, EndsAt, Quantity, Rc
 ** inc Cap.Total on resv if Rc.CapType = FREE
 ** add ResView
-*** mode=EDIT/VIEW
+*** edit=t/f
+* add Guest type
+** Name, User FK
+** add ResGuest
 * implement Col.Create/Drop
 ** add Table.Sync
 *** sync all columns/keys

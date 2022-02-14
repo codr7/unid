@@ -3,7 +3,7 @@ package tests
 import (
 	"context"
 	"github.com/codr7/unid/lib"
-	"github.com/codr7/unid/lib/data"
+	"github.com/codr7/unid/lib/db"
 	"github.com/jackc/pgx/v4"
 	"testing"
 )
@@ -19,7 +19,7 @@ func TestForeignKey(t *testing.T) {
 	}
 
 	defer dbc.Close(context.Background())
-	cx := data.NewCx(dbc)
+	cx := db.NewCx(dbc)
 	
 	if err := unid.InitDb(cx); err != nil {
 		t.Fatal(err)
@@ -32,14 +32,14 @@ func TestForeignKey(t *testing.T) {
 	u := unid.NewUser(cx)
 	u.Name = TEST_NAME
 	
-	if err := data.Store(u); err != nil {
+	if err := db.Store(u); err != nil {
 		t.Fatal(err)
 	}
 			
 	rc := unid.NewRc(cx)
 	rc.CreatedBy = u
 	rc.Name = TEST_NAME
-	data.Store(rc)
+	db.Store(rc)
 
 	rc.CreatedBy = nil
 

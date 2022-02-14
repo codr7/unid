@@ -1,4 +1,4 @@
-package data
+package db
 
 type Def interface {
 	Name() string
