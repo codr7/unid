@@ -9,6 +9,7 @@ body {
     width: 96%;
     margin-left: auto;
     margin-right: auto;
+    color: #736b1e;
 }
 
 button, input, select, textarea {
@@ -48,6 +49,10 @@ label {
     font-size: 125%;
     margin-top: 0.5em;
     margin-bottom: 0.25em;
+}
+
+input {
+    color: #736b1e;
 }
 
 input:read-only {
@@ -104,7 +109,7 @@ tr:not(:last-child) > td {
 }
 
 .shortcut {
-    color: #736b1e;
+    color: #ed8008;
     font-size: 75%;
     padding: 0.1em;
     margin-bottom: 0.25em;

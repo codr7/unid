@@ -30,10 +30,14 @@
 * add -drop cmd flag
 ** only drop in InitDb if set
 * add User/sView
-* add hashed user password
+* add hashed user passwords
 ** add field to UserView
 ** check on login
 * add README
+* add t8
+** store translations in json files/objects
+** extract www/t8/en.json
+** add www/t8/sv.json
 
 #ed8008
 #ed3f1c
