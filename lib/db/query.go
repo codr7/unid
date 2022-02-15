@@ -34,20 +34,6 @@ func (self *Query) From(rel Rel) *Query {
 	return self
 }
 
-func (self *Query) Join(right Table, key *ForeignKey) *Query {
-	i := len(self.from)-1
-	left := self.from[i]
-	var conds []Cond
-	pk := right.PrimaryKey().Cols()
-	
-	for i, c := range key.cols {
-		conds = append(conds, c.EqCol(pk[i]))
-	}
-	
-	self.from[i] = NewJoin(left, right, conds...)
-	return self
-}
-
 func (self *Query) Join2(right Table, key1, key2 *ForeignKey) *Query {
 	i := len(self.from)-1
 	left := self.from[i]
@@ -60,6 +46,10 @@ func (self *Query) Join2(right Table, key1, key2 *ForeignKey) *Query {
 	
 	self.from[i] = NewJoin(left, right, conds...)
 	return self
+}
+
+func (self *Query) Join(right Table, key *ForeignKey) *Query {
+	return self.Join2(right, key, key)
 }
 
 func (self *Query) Where(in...Cond) *Query {
