@@ -39,7 +39,11 @@ func TestForeignKey(t *testing.T) {
 	rc := unid.NewRc(cx)
 	rc.CreatedBy = u
 	rc.Name = TEST_NAME
-	db.Store(rc)
+	rc.CapType = unid.RcCapTypeFree
+	
+	if err := db.Store(rc); err != nil {
+		t.Fatal(err)
+	}
 
 	rc.CreatedBy = nil
 

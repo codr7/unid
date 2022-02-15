@@ -15,6 +15,7 @@ type Table interface {
 	Cx() *Cx
 	PrimaryKey() *Key
 	ForeignKeys() []*ForeignKey
+	NewEnumCol(name string, enum *Enum) *EnumCol
 	NewIntCol(name string) *IntCol
 	NewStringCol(name string) *StringCol
 	NewTimeCol(name string) *TimeCol
@@ -70,6 +71,12 @@ func (self *BasicTable) PrimaryKey() *Key {
 
 func (self *BasicTable) ForeignKeys() []*ForeignKey {
 	return self.foreignKeys
+}
+
+func (self *BasicTable) NewEnumCol(name string, enum *Enum) *EnumCol {
+	c := new(EnumCol).Init(name, enum)
+	self.AddCol(c)
+	return c
 }
 
 func (self *BasicTable) NewIntCol(name string) *IntCol {

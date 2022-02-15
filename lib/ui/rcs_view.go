@@ -28,7 +28,9 @@ func RcsView(w http.ResponseWriter, r *http.Request) {
 	cx := session.Cx()
 	t := fs.Table("rcsTable")
 	tr := t.Tr()
+	tr.Th()
 	tr.Th().Printf("Name")
+	tr.Th().Printf("Cap")
 	tr.Th().Printf("Created")
 	tr.Th().Printf("by")
 	rcs := cx.FindTable("Rcs")
@@ -54,11 +56,17 @@ func RcsView(w http.ResponseWriter, r *http.Request) {
 		}
 
 		tr = t.Tr()
+		tr.Td().A(fmt.Sprintf("rc.html?mode=edit&name=%v", rc.Name), "...")
 		tr.Td().Printf(rc.Name)
+		tr.Td().Printf(rc.CapType)
 		tr.Td().Printf(rc.CreatedAt.Format(session.TimeFormat()))
 		tr.Td().Printf("%v", rc.CreatedBy.(*db.RecProxy).KeyVals()[0])
 	}
-	
+
+
+	b := fs.Br().Div("buttons").Button("newButton", "New Resource")
+	b.OnClick("window.location = 'rc.html?mode=new';");
+
 	if err := d.Write(w); err != nil {
 		log.Fatal(err)
 	}

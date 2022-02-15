@@ -1,10 +1,10 @@
 a {
-    color: white;
+    color: #ed3f1c;
 }
 
 body {
     font-family: verdana, sans-serif;
-    font-size: 200%;
+    font-size: 150%;
     width: 96%;
     margin-left: auto;
     margin-right: auto;
@@ -19,10 +19,8 @@ button {
     letter-spacing: 1px;
     font-size: 125%;
     padding: 0.4em;
-    color: #bf7c2a;
-    background-color: #d9d2c6;
-    border: 1px solid;
-    border-color: #bfb1a8;
+    color: #ed3f1c;
+    border: none;
     border-radius: 0.1em;    
 }
 
@@ -30,7 +28,7 @@ h1 {
     display: block;
     font-size: 200%;
     letter-spacing: 2px;
-    color: #c09c6f;
+    color: #ed8008;
     margin-bottom: 0.75em;
 }
 
@@ -38,20 +36,16 @@ h2 {
     display: inline-block;
     font-size: 150%;
     letter-spacing: 2px;
-    color: #c09c6f;
+    color: #ed8008;
 }
 
 label {
     display: inline-block;
     letter-spacing: 1px;
-    color: #bf7c2a;
+    color: #ed8008;
     font-size: 125%;
     margin-top: 0.5em;
     margin-bottom: 0.25em;
-}
-
-input[type="checkbox"] {
-    transform: scale(2);
 }
 
 input:read-only {
@@ -97,7 +91,7 @@ textarea {
 th {
     font-size: 125%;
     letter-spacing: 1px;
-    color: #bfb1a8;
+    color: #ed8008;
     padding: 0.5em 0;
     padding-right: 0.5em;
     text-align: left;

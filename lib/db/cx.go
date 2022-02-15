@@ -9,7 +9,7 @@ import (
 type Cx struct {
 	conn *pgx.Conn
 	defs []RootDef
-	tableLookup map[string]Table
+	defLookup map[string]RootDef
 }
 
 func NewCx(conn *pgx.Conn) *Cx {
@@ -18,19 +18,26 @@ func NewCx(conn *pgx.Conn) *Cx {
 
 func (self *Cx) Init(conn *pgx.Conn) *Cx {
 	self.conn = conn
-	self.tableLookup = make(map[string]Table)
+	self.defLookup = make(map[string]RootDef)
 	return self
 }
 
 func (self *Cx) NewTable(name string) Table {
 	t := new(BasicTable).Init(self, name)
-	self.tableLookup[name] = t
+	self.defLookup[name] = t
 	self.defs = append(self.defs, t)
 	return t
 }
 
+func (self *Cx) NewEnum(name string, alts...string) *Enum {
+	e := NewEnum(self, name, alts...)
+	self.defLookup[name] = e
+	self.defs = append(self.defs, e)
+	return e
+}
+
 func (self *Cx) FindTable(name string) Table {
-	return self.tableLookup[name]
+	return self.defLookup[name].(Table)
 }
 
 func (self *Cx) ExecSQL(sql string, params...interface{}) error {

@@ -1,4 +1,4 @@
-function getBody() {
+function getFields() {
     return {user: document.getElementById('user').value,
 	    password: document.getElementById('password').value}
 }

@@ -107,6 +107,32 @@ func (self *BasicCol) ValParams() []interface{} {
 	return nil
 }
 
+type EnumCol struct {
+	BasicCol
+	enum *Enum
+}
+
+func (self *EnumCol) Init(name string, enum *Enum) *EnumCol {
+	self.BasicCol.Init(name)
+	self.enum = enum
+	return self
+}
+
+func (self *EnumCol) NewForeignCol(table Table, name string, key *ForeignKey) Col {
+	c := table.NewEnumCol(name, self.enum)
+	c.foreignKey = key
+	return c
+}
+
+func (self *EnumCol) NewField() interface{} {
+	var v string
+	return &v
+}
+
+func (self *EnumCol) ValType() string {
+	return fmt.Sprintf("\"%v\"", self.enum.name)
+}
+
 type IntCol struct {
 	BasicCol
 }

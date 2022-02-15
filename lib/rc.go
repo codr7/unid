@@ -6,11 +6,18 @@ import (
 	"time"
 )
 
+const (
+	RcCapTypeFree = "free"
+	RcCapTypePool = "pool"
+	RcCapTypeUnit = "unit"
+)
+
 type Rc struct {
 	db.BasicRec
 	Name string
 	CreatedAt time.Time
 	CreatedBy db.Ref
+	CapType string
 }
 
 func NewRc(cx *db.Cx) *Rc {

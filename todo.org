@@ -1,34 +1,42 @@
-* add db.Enum
-** unidys
-** cx.NewEnum
-** name/alts
-** add RcCapType/Rc.CapType
-*** FREE/POOL/UNIT
-**** only include POOL parent rcs in Rc.Caps()
-*** Show cap type in rcs view
-**** capitalize
 * add Pools
 *** PoolParent PoolChild
 *** Both primary
 ** list Pools comma separated in RcsView
-** use in GetCaps
+** use in Rc.Caps()
+** extract Rc.CapQuery() *db.Query
+** update only pool parents when adding capacity in UpdateCaps()
+** add pools to InitDb()
 * add CapsView
 * add RcView
-** edit=t/f
+** Add RevViewMode view/edit/new
 * add Res type
-** Id (init from seq), Caption, Details, StartsAt, EndsAt, Quantity, Rc
-** inc Cap.Total on resv if Rc.CapType = FREE
+** Id (init from seq), Caption, Details, StartsAt, EndsAt
 ** add ResView
-*** edit=t/f
+*** use RecViewMode
+* add ResItem type
+** Rc, StartsAt, EndsAt, Quantity, Rc
+** inc Cap.Total on resv if Rc.CapType = FREE
+** add items to ResView
+*** open up new item if
 * add Guest type
-** Name, User FK
+** Id (Seq), Name, User FK
 ** add ResGuest
 * implement Col.Create/Drop
 ** add Table.Sync
 *** sync all columns/keys
 *** call from Cx.SyncAll if exists
+* take db conn string as cmd arg
+* add -drop cmd flag
+** only drop in InitDb if set
+* add User/sView
+* add hashed user password
+** add field to UserView
+** check on login
+* add README
 
+#ed8008
+#ed3f1c
+#bf1b1b
+#736b1e
 #d9d2c6
-#bfb1a8
-#c09c6f
-#bf7c2a
+

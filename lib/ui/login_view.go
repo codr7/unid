@@ -29,7 +29,7 @@ func LoginView(w http.ResponseWriter, r *http.Request) {
 	fs.Br().Label("Password")
 	fs.Br().Input("password", "password")
 	b := fs.Br().Div("buttons").Button("loginButton", "Done")
-	b.OnClick("postJSON('login', getBody(), onLogin, onLoginError);")
+	b.OnClick("postJSON('login', getFields(), onLogin, onLoginError);")
 
 	if err := d.Write(w); err != nil {
 		log.Fatal(err)
