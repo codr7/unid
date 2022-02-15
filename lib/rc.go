@@ -88,14 +88,14 @@ func (self *Rc) CapsQuery(startsAt, endsAt time.Time) *db.Query {
 			caps.FindCol("EndsAt").Gt(startsAt))
 }
 
-func (self *Rc) Caps(q *db.Query) ([]*Cap, error) {	
+func LoadCaps(q *db.Query) ([]*Cap, error) {	
 	if err := q.Run(); err != nil {
 		return nil, err
 	}
 
 	defer q.Close()
 	var c Cap
-	c.Init(self.Cx())
+	c.Init(q.Cx())
 	var out []*Cap
 	
 	for q.Next() {
@@ -121,7 +121,7 @@ func (self *Rc) UpdateCaps(startsAt, endsAt time.Time, total, used int) error {
 			 
 	}
 	
-	cs, err := self.Caps(q)
+	cs, err := LoadCaps(q)
 
 	if err != nil {
 		return err

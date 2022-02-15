@@ -106,19 +106,26 @@ func InitDb(cx *db.Cx) error {
 			log.Fatal(err)
 		}
 
-		room1 := newRc("room1", RcCapTypeUnit)
+		newRoom := func(name string) *Rc {
+			rc := newRc(name, RcCapTypeUnit)
 
-		if err := room1.AddPool(lodging); err != nil {
-			log.Fatal(err)
+			if err := rc.AddPool(lodging); err != nil {
+				log.Fatal(err)
+			}
+			
+			if err := rc.AddPool(rooms); err != nil {
+				log.Fatal(err)
+			}
+			
+			if err := rc.UpdateCaps(time.Now(), MaxTime(), 1, 0); err != nil {
+				log.Fatal(err)
+			}
+
+			return rc
 		}
 
-		if err := room1.AddPool(rooms); err != nil {
-			log.Fatal(err)
-		}
-
-		if err := room1.UpdateCaps(time.Now(), MaxTime(), 1, 0); err != nil {
-			return err
-		}
+		newRoom("room1")
+		newRoom("room2")
 	}
 
 	return nil

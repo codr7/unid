@@ -1,6 +1,10 @@
 * finish CapsView
-** load/display caps
+** debug cap numbers
+*** why are units missing?
+*** why are pools 0?
+** change text alignment to right for columns 1+
 ** add totals
+* debug login href
 * add Rvn type
 ** Id (init from seq), Notes, StartsAt, EndsAt
 ** add ResView
@@ -45,3 +49,4 @@
 #736b1e
 #d9d2c6
 
+<INPUT TYPE="NUMBER" MIN="0" MAX="10" STEP="2" VALUE="6" SIZE="6">

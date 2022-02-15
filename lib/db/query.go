@@ -24,6 +24,10 @@ func (self *Query) Init(cx *Cx) *Query {
 	return self
 }
 
+func (self *Query) Cx() *Cx {
+	return self.cx
+}
+
 func (self *Query) Select(in...Val) *Query {
 	self.vals = append(self.vals, in...)
 	return self
