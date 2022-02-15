@@ -109,11 +109,11 @@ tr:not(:last-child) > td {
 }
 
 .shortcut {
-    color: #ed8008;
+    color: #736b1e;
     font-size: 75%;
     padding: 0.1em;
     margin-bottom: 0.25em;
-    border: 1px solid;
+    border: 1px solid #ed8008;
     border-radius: 0.1em;
     display: inline-block;
 }
