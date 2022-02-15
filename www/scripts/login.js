@@ -22,7 +22,9 @@ function getFields() {
 }
 
 function onLogin(response) {
-    window.location.replace('rcs.html');
+    response.json().then(href => {
+	window.location.replace(href)
+    });
 }
 
 function onLoginError(response) {

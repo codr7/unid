@@ -1,10 +1,12 @@
 package ui
 
 import (
+	"fmt"
 	"github.com/codr7/unid/lib"
 	"github.com/codr7/unid/lib/db"
 	"github.com/google/uuid"
 	"net/http"
+	"net/url"
 	"sync"
 )
 
@@ -66,6 +68,6 @@ func CurrentSession(w http.ResponseWriter, r *http.Request) *Session {
 		return s
 	}
 
-	http.Redirect(w, r, "login.html", http.StatusFound)
+	http.Redirect(w, r, fmt.Sprintf("login.html?href=%v", url.QueryEscape(r.URL.Path)), http.StatusFound)
 	return nil
 }

@@ -1,4 +1,5 @@
 * add CapsView
+** add caps.html handler
 * add RcView
 ** add rc.html handler
 ** add RecViewMode show/edit/new

@@ -28,7 +28,10 @@ func LoginView(w http.ResponseWriter, r *http.Request) {
 	fs.Br().Input("user", "text").Autofocus()
 	fs.Br().Label("Password")
 	fs.Br().Input("password", "password")
-	b := fs.Br().Div("buttons").Button("enterButton", "Enter")
+	bs := fs.Br().Div("buttons")
+	bs.Span().Set("class", "shortcut").Printf("Enter")
+	bs.Br()
+	b := bs.Button("enterButton", "Enter")
 	b.OnClick("login();")
 	
 	if err := d.Write(w); err != nil {
@@ -49,8 +52,8 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	url := "postgres://test:test@localhost:5432/test"
-	dbc, err := pgx.Connect(context.Background(), url)
+	dbcs := "postgres://test:test@localhost:5432/test"
+	dbc, err := pgx.Connect(context.Background(), dbcs)
 	
 	if err != nil {
 		http.Error(w,
@@ -87,6 +90,13 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	}	
 
 	StartSession(u, w)
+	href := "rcs.html"
+
+	if v := r.FormValue("href"); v != "" {
+		href = v
+	}
+	
+	json.NewEncoder(w).Encode(href)
 }
 
 func LogoutHandler(w http.ResponseWriter, r *http.Request) {
