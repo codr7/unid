@@ -74,25 +74,25 @@ func (self *BasicTable) PrimaryKey() *Key {
 }
 
 func (self *BasicTable) NewEnumCol(name string, enum *Enum) *EnumCol {
-	c := new(EnumCol).Init(name, enum)
+	c := new(EnumCol).Init(self, name, enum)
 	self.AddCol(c)
 	return c
 }
 
 func (self *BasicTable) NewIntCol(name string) *IntCol {
-	c := new(IntCol).Init(name)
+	c := new(IntCol).Init(self, name)
 	self.AddCol(c)
 	return c
 }
 
 func (self *BasicTable) NewStringCol(name string) *StringCol {
-	c := new(StringCol).Init(name)
+	c := new(StringCol).Init(self, name)
 	self.AddCol(c)
 	return c
 }
 
 func (self *BasicTable) NewTimeCol(name string) *TimeCol {
-	c := new(TimeCol).Init(name)
+	c := new(TimeCol).Init(self, name)
 	self.AddCol(c)
 	return c
 }

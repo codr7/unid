@@ -1,5 +1,3 @@
-* add BasicCol table field
-** change WriteValSql to include table name
 * add CapsView
 * add RcView
 ** add rc.html handler

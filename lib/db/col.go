@@ -29,13 +29,15 @@ type Col interface {
 type BasicCol struct {
 	BasicDef
 	BasicField
+	table Table
 	isPrimaryKey bool
 	foreignKey *ForeignKey
 }
 
-func (self *BasicCol) Init(name string) {
+func (self *BasicCol) Init(table Table, name string) {
 	self.BasicDef.Init(name)
 	self.BasicField.Init(name)
+	self.table = table
 }
 
 func (self *BasicCol) GetFieldAddr(rec Ref) interface{} {
@@ -104,7 +106,7 @@ func (self *BasicCol) ForeignKey() *ForeignKey {
 }
 
 func (self *BasicCol) WriteValSql(out io.Writer) error {
-	_, err :=fmt.Fprintf(out, "\"%v\"", self.name)
+	_, err :=fmt.Fprintf(out, "\"%v\".\"%v\"", self.table.Name(), self.name)
 	return err
 }
 
@@ -143,8 +145,8 @@ type EnumCol struct {
 	enum *Enum
 }
 
-func (self *EnumCol) Init(name string, enum *Enum) *EnumCol {
-	self.BasicCol.Init(name)
+func (self *EnumCol) Init(table Table, name string, enum *Enum) *EnumCol {
+	self.BasicCol.Init(table, name)
 	self.enum = enum
 	return self
 }
@@ -168,8 +170,8 @@ type IntCol struct {
 	BasicCol
 }
 
-func (self *IntCol) Init(name string) *IntCol {
-	self.BasicCol.Init(name)
+func (self *IntCol) Init(table Table, name string) *IntCol {
+	self.BasicCol.Init(table, name)
 	return self
 }
 
@@ -191,8 +193,8 @@ type StringCol struct {
 	BasicCol
 }
 
-func (self *StringCol) Init(name string) *StringCol {
-	self.BasicCol.Init(name)
+func (self *StringCol) Init(table Table, name string) *StringCol {
+	self.BasicCol.Init(table, name)
 	return self
 }
 
@@ -215,8 +217,8 @@ type TimeCol struct {
 	BasicCol
 }
 
-func (self *TimeCol) Init(name string) *TimeCol {
-	self.BasicCol.Init(name)
+func (self *TimeCol) Init(table Table, name string) *TimeCol {
+	self.BasicCol.Init(table, name)
 	return self
 }
 
