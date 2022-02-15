@@ -1,4 +1,3 @@
-* update only pool parents when adding capacity (Used == 0)
 * add BasicCol table field
 ** change WriteValSql to include table name
 * add CapsView
@@ -6,18 +5,18 @@
 ** add rc.html handler
 ** add RecViewMode show/edit/new
 ** move Created by from RcsView
-* add Resv type
+* add Rvn type
 ** Id (init from seq), Notes, StartsAt, EndsAt
 ** add ResView
 *** use RecViewMode
-* add ResvItem type
-** Rc, StartsAt, EndsAt, Quantity, Rc
+* add RvnItem type
+** Rvn, Rc, StartsAt, EndsAt, Quantity, Rc
 ** inc Cap.Total on resv if Rc.CapType = FREE
-** add items to ResView
+** add items to ResvView
 *** open up new item if
 * add Guest type
 ** Id (Seq), Name
-** add ResvGuests
+** add RvnGuests
 *** Resv, Guest, Notes, ArrivesAt, DepartsAt
 ** add Guests field to Cap
 *** add arg to UpdateCaps

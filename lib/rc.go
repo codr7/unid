@@ -76,17 +76,19 @@ func (self *Rc) NewCap(startsAt, endsAt time.Time, total, used int) *Cap {
 	return c
 }
 
-func (self *Rc) Caps(startsAt, endsAt time.Time) ([]*Cap, error) {
+func (self *Rc) CapsQuery(startsAt, endsAt time.Time) *db.Query {
 	cx := self.Cx()
 	caps := cx.FindTable("Caps")	
 	pools := cx.FindTable("Pools")
 	
-	q := caps.Query().
+	return caps.Query().
 		Join2(pools, pools.FindForeignKey("Parent"), caps.FindForeignKey("Rc")).
 		Where(pools.FindCol("ChildName").Eq(self.Name),
 			caps.FindCol("StartsAt").Lt(endsAt),
 			caps.FindCol("EndsAt").Gt(startsAt))
-	
+}
+
+func (self *Rc) Caps(q *db.Query) ([]*Cap, error) {	
 	if err := q.Run(); err != nil {
 		return nil, err
 	}
@@ -108,7 +110,18 @@ func (self *Rc) Caps(startsAt, endsAt time.Time) ([]*Cap, error) {
 }
 
 func (self *Rc) UpdateCaps(startsAt, endsAt time.Time, total, used int) error {
-	cs, err := self.Caps(startsAt, endsAt)
+	cx := self.Cx()
+	q := self.CapsQuery(startsAt, endsAt)
+	
+	if used == 0 {
+		rcs := cx.FindTable("Rcs")
+		
+		q.Join(rcs, cx.FindTable("Caps").FindForeignKey("Rc")).
+			Where(rcs.FindCol("CapType").Eq(RcCapTypePool))
+			 
+	}
+	
+	cs, err := self.Caps(q)
 
 	if err != nil {
 		return err
