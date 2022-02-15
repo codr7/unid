@@ -37,13 +37,18 @@ func (self *Cap) GetRc() (*Rc, error) {
 	return self.Rc.(*Rc), nil
 }
 
-func UpdateCaps(in []*Cap, rc *Rc, startsAt, endsAt time.Time, total, used int) []*Cap {
+func UpdateCaps(in []*Cap, startsAt, endsAt time.Time, total, used int) []*Cap {
 	var out []*Cap
 	
 	for _, c := range in {
 		if c.StartsAt.Before(startsAt) {
 			prefix := c
-			c = rc.NewCap(startsAt, c.EndsAt, c.Total, c.Used)
+			c := new(Cap).Init(prefix.Cx())
+			c.Rc = prefix.Rc
+			c.StartsAt = startsAt
+			c.EndsAt = prefix.EndsAt
+			c.Total = prefix.Total
+			c.Used = prefix.Used
 			prefix.EndsAt = startsAt
 			out = append(out, prefix)
 		} else {

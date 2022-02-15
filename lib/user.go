@@ -12,9 +12,9 @@ type User struct {
 }
 
 func NewUser(cx *db.Cx) *User {
-	u := new(User).Init(cx)
-	u.CreatedAt = time.Now()
-	return u
+	self := new(User).Init(cx)
+	self.CreatedAt = time.Now()
+	return self
 }
 
 func (self *User) Init(cx *db.Cx) *User {

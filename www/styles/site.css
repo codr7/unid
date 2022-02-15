@@ -19,10 +19,11 @@ button, input, select, textarea {
 button {
     letter-spacing: 1px;
     padding: 0.4em;
-    color: #ed3f1c;
+    color: #ed8008;
     border: none;
     border-radius: 0.1em;
     cursor: pointer;
+    font-size: 125%;    
 }
 
 h1 {

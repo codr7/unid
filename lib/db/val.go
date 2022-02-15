@@ -3,7 +3,6 @@ package db
 import (
 	"fmt"
 	"io"
-	"strings"
 )
 
 type Val interface {
@@ -33,22 +32,4 @@ func (self *CustomVal) WriteValSql(out io.Writer) error {
 
 func (self *CustomVal) ValParams() []interface{} {
 	return self.params
-}
-
-func Op(op string, l Val, r interface{}) Cond {
-	var sql strings.Builder
-	l.WriteValSql(&sql)
-	return NewCond("%v %v $$", []interface{}{sql.String(), op}, []interface{}{r})
-}
-
-func Eq(l Val, r interface{}) Cond {
-	return Op("=", l, r)
-}
-
-func Lt(l Val, r interface{}) Cond {
-	return Op("<", l, r)
-}
-
-func Gt(l Val, r interface{}) Cond {
-	return Op(">", l, r)
 }

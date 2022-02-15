@@ -18,10 +18,13 @@ func InitDb(cx *db.Cx) error {
 	rcs.NewStringCol("Name").SetPrimaryKey(true)
 	rcs.NewTimeCol("CreatedAt")
 	rcs.NewEnumCol("CapType", rcCapType)
-	
+
+	pools := cx.NewTable("Pools")
+	pools.NewForeignKey("Parent", rcs).SetPrimaryKey(true)
+	pools.NewForeignKey("Child", rcs).SetPrimaryKey(true)
+
 	caps := cx.NewTable("Caps")
-	caps.NewForeignKey("Rc", rcs)
-	caps.FindCol("RcName").SetPrimaryKey(true)
+	caps.NewForeignKey("Rc", rcs).SetPrimaryKey(true)
 	caps.NewTimeCol("StartsAt").SetPrimaryKey(true)
 	caps.NewTimeCol("EndsAt")
 	caps.NewIntCol("Total")
@@ -54,6 +57,10 @@ func InitDb(cx *db.Cx) error {
 			return err
 		}
 
+		if err := pools.Create(); err != nil {
+			return err
+		}
+
 		if err := caps.Create(); err != nil {
 			return err
 		}
@@ -72,18 +79,42 @@ func InitDb(cx *db.Cx) error {
 		}
 		
 		newRc("breakfast", RcCapTypeFree)
-		newRc("lodging", RcCapTypePool)
-		newRc("cabins", RcCapTypePool)
+		lodging := newRc("lodging", RcCapTypePool)
+		cabins := newRc("cabins", RcCapTypePool)
+		
+		if err := cabins.AddPool(lodging); err != nil {
+			log.Fatal(err)
+		}
 
 		cabin1 := newRc("cabin1", RcCapTypeUnit)
+
+		if err := cabin1.AddPool(lodging); err != nil {
+			log.Fatal(err)
+		}
+
+		if err := cabin1.AddPool(cabins); err != nil {
+			log.Fatal(err)
+		}
 
 		if err := cabin1.UpdateCaps(time.Now(), MaxTime(), 1, 0); err != nil {
 			return err
 		}
 
-		newRc("rooms", RcCapTypePool)
-		
+		rooms := newRc("rooms", RcCapTypePool)
+
+		if err := rooms.AddPool(lodging); err != nil {
+			log.Fatal(err)
+		}
+
 		room1 := newRc("room1", RcCapTypeUnit)
+
+		if err := room1.AddPool(lodging); err != nil {
+			log.Fatal(err)
+		}
+
+		if err := room1.AddPool(rooms); err != nil {
+			log.Fatal(err)
+		}
 
 		if err := room1.UpdateCaps(time.Now(), MaxTime(), 1, 0); err != nil {
 			return err

@@ -21,9 +21,9 @@ type Rc struct {
 }
 
 func NewRc(cx *db.Cx) *Rc {
-	rc := new(Rc).Init(cx)
-	rc.CreatedAt = time.Now()
-	return rc
+	self := new(Rc).Init(cx)
+	self.CreatedAt = time.Now()
+	return self
 }
 
 func (self *Rc) Init(cx *db.Cx) *Rc {
@@ -36,8 +36,19 @@ func (self *Rc) Table() db.Table {
 }
 
 func (self *Rc) AfterInsert() error {
+	p := NewPool(self, self)
+
+	if err := db.Store(p); err != nil {
+		return err
+	}
+
 	c := self.NewCap(MinTime(), MaxTime(), 0, 0)
-	return db.Store(c)
+
+	if err := db.Store(c); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (self *Rc) GetCreatedBy() (*User, error) {
@@ -67,12 +78,15 @@ func (self *Rc) NewCap(startsAt, endsAt time.Time, total, used int) *Cap {
 
 func (self *Rc) Caps(startsAt, endsAt time.Time) ([]*Cap, error) {
 	cx := self.Cx()
-	caps := cx.FindTable("Caps")
+	caps := cx.FindTable("Caps")	
+	pools := cx.FindTable("Pools")
+	
 	q := caps.Query().
-		Where(db.Eq(caps.FindCol("RcName"), self.Name),
-			db.Lt(caps.FindCol("StartsAt"), endsAt),
-			db.Gt(caps.FindCol("EndsAt"), startsAt))
-		
+		Join2(pools, pools.FindForeignKey("Parent"), caps.FindForeignKey("Rc")).
+		Where(pools.FindCol("ChildName").Eq(self.Name),
+			caps.FindCol("StartsAt").Lt(endsAt),
+			caps.FindCol("EndsAt").Gt(startsAt))
+	
 	if err := q.Run(); err != nil {
 		return nil, err
 	}
@@ -100,7 +114,7 @@ func (self *Rc) UpdateCaps(startsAt, endsAt time.Time, total, used int) error {
 		return err
 	}
 	
-	cs = UpdateCaps(cs, self, startsAt, endsAt, total, used)
+	cs = UpdateCaps(cs, startsAt, endsAt, total, used)
 
 	for _, c := range cs {
 		if err = db.Store(c); err != nil {
@@ -109,4 +123,8 @@ func (self *Rc) UpdateCaps(startsAt, endsAt time.Time, total, used int) error {
 	}
 
 	return nil
+}
+
+func (self *Rc) AddPool(parent *Rc) error {
+	return db.Store(NewPool(parent, self))
 }

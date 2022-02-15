@@ -34,6 +34,20 @@ func (self *Query) From(rel Rel) *Query {
 	return self
 }
 
+func (self *Query) Join2(right Table, key1, key2 *ForeignKey) *Query {
+	i := len(self.from)-1
+	left := self.from[i]
+	var conds []Cond
+	
+	for i, c1 := range key1.cols {
+		c2 := key2.cols[i]
+		conds = append(conds, c1.EqCol(c2))
+	}
+	
+	self.from[i] = NewJoin(left, right, conds...)
+	return self
+}
+
 func (self *Query) Where(in...Cond) *Query {
 	self.conds = append(self.conds, in...)
 	return self
@@ -44,7 +58,7 @@ func (self *Query) OrderBy(in...Val) *Query {
 	return self
 }
 
-func IndexParams(sql string) string {
+func indexParams(sql string) string {
 	n := 1
 	
 	for {
@@ -119,7 +133,7 @@ func (self *Query) Run() error {
 	}
 
 	var err error
-	self.rows, err = self.cx.Query(IndexParams(sql.String()), params...)
+	self.rows, err = self.cx.Query(indexParams(sql.String()), params...)
 	return err
 }
 

@@ -14,12 +14,15 @@ type Table interface {
 
 	Cx() *Cx
 	PrimaryKey() *Key
-	ForeignKeys() []*ForeignKey
+
+	NewForeignKey(name string, foreignTable Table) *ForeignKey
+	FindForeignKey(name string) *ForeignKey
+	
 	NewEnumCol(name string, enum *Enum) *EnumCol
 	NewIntCol(name string) *IntCol
 	NewStringCol(name string) *StringCol
 	NewTimeCol(name string) *TimeCol
-	NewForeignKey(name string, foreignTable Table) *ForeignKey
+
 	NewStoredRec() StoredRec
 	StoredRec(rec Rec) StoredRec
 	Insert(rec Rec) error
@@ -35,7 +38,7 @@ type BasicTable struct {
 
 	cx *Cx
 	primaryKey *Key
-	foreignKeys []*ForeignKey
+	foreignKeys map[string]*ForeignKey
 	storedRecs map[Rec]StoredRec
 }
 
@@ -45,6 +48,7 @@ func (self *BasicTable) Init(cx *Cx, name string) *BasicTable {
 	self.BasicCols.Init()
 	self.BasicDef.Init(name)
 	self.cx = cx
+	self.foreignKeys = make(map[string]*ForeignKey)
 	self.storedRecs = make(map[Rec]StoredRec)
 	return self
 }
@@ -67,10 +71,6 @@ func (self *BasicTable) PrimaryKey() *Key {
 	}
 	
 	return self.primaryKey
-}
-
-func (self *BasicTable) ForeignKeys() []*ForeignKey {
-	return self.foreignKeys
 }
 
 func (self *BasicTable) NewEnumCol(name string, enum *Enum) *EnumCol {
@@ -110,8 +110,12 @@ func (self *BasicTable) NewForeignKey(name string, foreignTable Table) *ForeignK
 		k.AddCol(c.NewForeignCol(self, fn, k))
 	}
 
-	self.foreignKeys = append(self.foreignKeys, k)
+	self.foreignKeys[name] = k
 	return k
+}
+
+func (self *BasicTable) FindForeignKey(name string) *ForeignKey {
+	return self.foreignKeys[name]
 }
 
 func (self *BasicTable) Create() error {

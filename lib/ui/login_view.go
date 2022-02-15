@@ -54,7 +54,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	
 	if err != nil {
 		http.Error(w,
-			fmt.Sprintf("Failed connecting to dbbase: %v", err),
+			fmt.Sprintf("Failed connecting to db: %v", err),
 			http.StatusInternalServerError)
 
 		return
@@ -64,7 +64,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	
 	if err := unid.InitDb(cx); err != nil {
 		http.Error(w,
-			fmt.Sprintf("Failed initializing dbbase: %v", err),
+			fmt.Sprintf("Failed initializing db: %v", err),
 			http.StatusInternalServerError)
 
 		return
@@ -72,7 +72,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	
 	if err := cx.SyncAll(); err != nil {
 		http.Error(w,
-			fmt.Sprintf("Failed syncing dbbase: %v", err),
+			fmt.Sprintf("Failed syncing db: %v", err),
 			http.StatusInternalServerError)
 
 		return

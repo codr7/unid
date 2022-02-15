@@ -15,12 +15,12 @@ type CustomCond struct {
 	params []interface{}
 }
 
-func NewCond(sql string, args []interface{}, params []interface{}) Cond {
-	return new(CustomCond).Init(sql, args, params)
+func NewCond(sql string, params...interface{}) Cond {
+	return new(CustomCond).Init(sql, params...)
 }
 
-func (self *CustomCond) Init(sql string, args []interface{}, params []interface{}) *CustomCond {
-	self.sql = fmt.Sprintf(sql, args...)
+func (self *CustomCond) Init(sql string, params...interface{}) *CustomCond {
+	self.sql = sql
 	self.params = params
 	return self
 }

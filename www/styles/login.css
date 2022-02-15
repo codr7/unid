@@ -8,4 +8,5 @@ input[type="password"] {
 
 button {
     border: 1px solid;
+    border-color: #ed8008;
 }

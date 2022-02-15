@@ -4,6 +4,7 @@ type Cols interface {
 	Cols() []Col
 	AddCol(cols...Col)
 	FindCol(name string) Col
+	SetPrimaryKey(val bool)
 }
 
 type BasicCols struct {
@@ -32,5 +33,11 @@ func (self *BasicCols) FindCol(name string) Col {
 	}		
 
 	return nil
+}
+
+func (self *BasicCols) SetPrimaryKey(val bool) {
+	for _, c := range self.cols {
+		c.SetPrimaryKey(true)
+	}
 }
 

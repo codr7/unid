@@ -1,26 +1,28 @@
-* add Pools
-*** PoolParent PoolChild
-*** Both primary
-** list Pools comma separated in RcsView
-** use in Rc.Caps()
-** extract Rc.CapQuery() *db.Query
-** update only pool parents when adding capacity in UpdateCaps()
-** add pools to InitDb()
-* add RcView
-** Add RevViewMode view/edit/new
+* update only pool parents when adding capacity (Used == 0)
+* add BasicCol table field
+** change WriteValSql to include table name
 * add CapsView
-* add Res type
-** Id (init from seq), Caption, Details, StartsAt, EndsAt
+* add RcView
+** add rc.html handler
+** add RecViewMode show/edit/new
+** move Created by from RcsView
+* add Resv type
+** Id (init from seq), Notes, StartsAt, EndsAt
 ** add ResView
 *** use RecViewMode
-* add ResItem type
+* add ResvItem type
 ** Rc, StartsAt, EndsAt, Quantity, Rc
 ** inc Cap.Total on resv if Rc.CapType = FREE
 ** add items to ResView
 *** open up new item if
 * add Guest type
-** Id (Seq), Name, User FK
-** add ResGuest
+** Id (Seq), Name
+** add ResvGuests
+*** Resv, Guest, Notes, ArrivesAt, DepartsAt
+** add Guests field to Cap
+*** add arg to UpdateCaps
+** call on inserting ResvGuest
+** call on changing dates
 * implement Col.Create/Drop
 ** add Table.Sync
 *** sync all columns/keys

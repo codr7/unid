@@ -5,6 +5,7 @@ import (
 	"io"
 	//"log"
 	"reflect"
+	"strings"
 	"time"
 )
 
@@ -19,6 +20,10 @@ type Col interface {
 	IsPrimaryKey() bool
 	SetPrimaryKey(bool)
 	ForeignKey() *ForeignKey
+	EqCol(r Col) Cond
+	Eq(r interface{}) Cond
+	Lt(r interface{}) Cond
+	Gt(r interface{}) Cond
 }
 
 type BasicCol struct {
@@ -105,6 +110,32 @@ func (self *BasicCol) WriteValSql(out io.Writer) error {
 
 func (self *BasicCol) ValParams() []interface{} {
 	return nil
+}
+
+func  (self *BasicCol) Op(op string, r interface{}) Cond {
+	var sql strings.Builder
+	self.WriteValSql(&sql)
+	return NewCond(fmt.Sprintf("%v %v $$", sql.String(), op), r)
+}
+
+func (self *BasicCol) EqCol(r Col) Cond {
+	var sql strings.Builder
+	self.WriteValSql(&sql)
+	sql.WriteString(" = ")
+	r.WriteValSql(&sql)
+	return NewCond(sql.String())
+}
+
+func (self *BasicCol) Eq(r interface{}) Cond {
+	return self.Op("=", r)
+}
+
+func (self *BasicCol) Lt(r interface{}) Cond {
+	return self.Op("<", r)
+}
+
+func (self *BasicCol) Gt(r interface{}) Cond {
+	return self.Op(">", r)
 }
 
 type EnumCol struct {
