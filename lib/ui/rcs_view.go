@@ -56,6 +56,10 @@ func getPools(rc *unid.Rc) (string, error) {
 		var pn string
 		q.Scan(&pn)
 
+		if pn == rc.Name {
+			continue
+		}
+		
 		if out.Len() > 0 {
 			out.WriteString(", ")
 		}

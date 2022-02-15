@@ -37,7 +37,7 @@ func StartSession(user *unid.User, w http.ResponseWriter) *Session {
 	k := NewSessionKey()
 	s := &Session{sessionKey: k, user: user}
 	sessions.Store(k, s)
-	http.SetCookie(w, &http.Cookie{Name: SESSION_COOKIE_NAME, Value: k})
+	http.SetCookie(w, &http.Cookie{Name: SESSION_COOKIE_NAME, Value: k, SameSite: http.SameSiteLaxMode})
 	return s
 }
 
@@ -53,7 +53,7 @@ func FindSession(r *http.Request) *Session {
 	}
 	
 	s, _ := sessions.Load(c.Value)
-
+	
 	if s == nil {
 		return nil
 	}
