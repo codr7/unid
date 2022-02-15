@@ -23,7 +23,7 @@ function getFields() {
 
 function onLogin(response) {
     response.json().then(href => {
-	window.location.replace(href)
+	window.location.replace(href);
     });
 }
 

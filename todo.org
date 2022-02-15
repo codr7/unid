@@ -1,9 +1,6 @@
-* add CapsView
-** add caps.html handler
-* add RcView
-** add rc.html handler
-** add RecViewMode show/edit/new
-** move Created by from RcsView
+* finish CapsView
+** load/display caps
+** add totals
 * add Rvn type
 ** Id (init from seq), Notes, StartsAt, EndsAt
 ** add ResView
@@ -21,6 +18,10 @@
 *** add arg to UpdateCaps
 ** call on inserting ResvGuest
 ** call on changing dates
+* add RcView
+** add rc.html handler
+** add RecViewMode show/edit/new
+** move Created by from RcsView
 * implement Col.Create/Drop
 ** add Table.Sync
 *** sync all columns/keys

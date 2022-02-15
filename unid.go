@@ -18,6 +18,7 @@ func main() {
 	http.HandleFunc("/login", ui.LoginHandler)
 	http.HandleFunc("/logout", ui.LogoutHandler)
 	
+	http.HandleFunc("/caps.html", ui.CapsView)
 	http.HandleFunc("/rcs.html", ui.RcsView)
 	log.Fatal(http.ListenAndServe(":8080", nil))	
 }
