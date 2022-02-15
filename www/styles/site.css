@@ -1,5 +1,6 @@
 a {
     color: #ed3f1c;
+    text-decoration: none;
 }
 
 body {
@@ -17,11 +18,11 @@ button, input, select, textarea {
 
 button {
     letter-spacing: 1px;
-    font-size: 125%;
     padding: 0.4em;
     color: #ed3f1c;
     border: none;
-    border-radius: 0.1em;    
+    border-radius: 0.1em;
+    cursor: pointer;
 }
 
 h1 {
@@ -101,8 +102,18 @@ tr:not(:last-child) > td {
     padding-bottom: 0.25em;
 }
 
+.shortcut {
+    color: #736b1e;
+    font-size: 75%;
+    padding: 0.1em;
+    margin-bottom: 0.25em;
+    border: 1px solid;
+    border-radius: 0.1em;
+    display: inline-block;
+}
+
 #buttons {
-    margin-top: 3em;
+    margin-top: 2em;
 }
 
 #frame {

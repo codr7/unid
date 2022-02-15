@@ -56,16 +56,21 @@ func RcsView(w http.ResponseWriter, r *http.Request) {
 		}
 
 		tr = t.Tr()
-		tr.Td().A(fmt.Sprintf("rc.html?mode=edit&name=%v", rc.Name), "...")
+		tr.Td().A(fmt.Sprintf("rc.html?mode=view&name=%v", rc.Name), "...")
 		tr.Td().Printf(rc.Name)
 		tr.Td().Printf(rc.CapType)
 		tr.Td().Printf(rc.CreatedAt.Format(session.TimeFormat()))
-		tr.Td().Printf("%v", rc.CreatedBy.(*db.RecProxy).KeyVals()[0])
+		createdBy := rc.CreatedBy.(*db.RecProxy).KeyVals()[0].(string)
+		tr.Td().A(fmt.Sprintf("user.html?mode=view?name=%v", createdBy), createdBy)
 	}
 
 
-	b := fs.Br().Div("buttons").Button("newButton", "New Resource")
-	b.OnClick("window.location = 'rc.html?mode=new';");
+	bs := fs.Br().Div("buttons")
+	bs.Span().Set("class", "shortcut").Printf("Alt+N")
+	bs.Br()
+	b := bs.Button("newButton", "New Resource")
+	b.OnClick("window.location = 'rc.html?mode=new';")
+	b.Set("accesskey", "n")
 
 	if err := d.Write(w); err != nil {
 		log.Fatal(err)

@@ -6,9 +6,9 @@
 ** extract Rc.CapQuery() *db.Query
 ** update only pool parents when adding capacity in UpdateCaps()
 ** add pools to InitDb()
-* add CapsView
 * add RcView
 ** Add RevViewMode view/edit/new
+* add CapsView
 * add Res type
 ** Id (init from seq), Caption, Details, StartsAt, EndsAt
 ** add ResView

@@ -1,9 +1,5 @@
 package dom
 
-import (
-	"fmt"
-)
-
 var br Node
 
 func init() {
@@ -12,10 +8,6 @@ func init() {
 
 func (self *Node) A(href string, caption string) *Node {
 	return self.NewNode("a").Set("href", href).Printf(caption)
-}
-
-func (self *Node) Autofocus() *Node {
-	return self.Set("autofocus", nil)
 }
 
 func (self *Node) Br() *Node {
@@ -55,26 +47,8 @@ func (self *Node) Label(caption string) *Node {
 	return self.NewNode("label").Printf(caption)
 }
 
-func (self *Node) OnChange(spec string, args...interface{}) *Node {
-	fmt.Fprintf(&self.script,
-		"document.getElementById('%v').addEventListener('change', (event) => {\n%v\n});\n",
-		self.Id(),
-		fmt.Sprintf(spec, args...))
-
-	return self
-}
-
-func (self *Node) OnClick(spec string, args...interface{}) *Node {
-	fmt.Fprintf(&self.script,
-		"document.getElementById('%v').addEventListener('click', (event) => {\n%v\n});\n",
-		self.Id(),
-		fmt.Sprintf(spec, args...))
-
-	return self
-}
-
-func (self *Node) Readonly() *Node {
-	return self.Set("readonly", nil)
+func (self *Node) Span() *Node {
+	return self.NewNode("span")
 }
 
 func (self *Node) Ul(id string) *Node {
