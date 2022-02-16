@@ -121,11 +121,10 @@ tr:not(:last-child) > td {
 }
 
 .shortcut {
-    color: #736b1e;
+    color: #ed8008;
     font-size: 75%;
     padding: 0.1em;
-    margin-bottom: 0.25em;
-    border: 1px solid #ed8008;
+    margin-bottom: 0.2em;
     border-radius: 0.1em;
     display: inline-block;
 }
