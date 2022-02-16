@@ -2,13 +2,14 @@
 ** debug cap numbers
 *** why are units missing?
 *** why are pools 0?
-** change text alignment to right for columns 1+
 ** add totals
 * debug login href
 * add Rvn type
 ** Id (init from seq), Notes, StartsAt, EndsAt
-** add ResView
-*** use RecViewMode
+* add RvnView
+** use RecViewMode
+** track last reservation in session
+*** use for item link in caps view
 * add RvnItem type
 ** Rvn, Rc, StartsAt, EndsAt, Quantity, Rc
 ** inc Cap.Total on resv if Rc.CapType = FREE

@@ -24,6 +24,7 @@ func CapsView(w http.ResponseWriter, r *http.Request) {
 	doc := dom.NewDoc(title)
 	doc.Style("styles/reset.css")
 	doc.Style("styles/site.css")
+	doc.Style("styles/caps.css")
 
 	fs := doc.Body.FieldSet("frame")
 	fs.H1(title)
@@ -121,10 +122,16 @@ func CapsView(w http.ResponseWriter, r *http.Request) {
 	b.OnClick("changeTotal();")
 
 	d = bs.Div("")
-	d.Span().Set("class", "shortcut").Printf("Alt+N")
-	b = d.Br().Button("newButton", "New Reservation")
+	d.Span().Set("class", "shortcut").Printf("Alt+R")
+	b = d.Br().Button("newRvnButton", "New Reservation")
 	b.OnClick("window.location = 'rvn.html?mode=new';")
-	b.Set("accesskey", "n")
+	b.Set("accesskey", "r")
+
+	d = bs.Div("")
+	d.Span().Set("class", "shortcut").Printf("Alt+I")
+	b = d.Br().Button("newRvnItemButton", "New Item")
+	b.OnClick("window.location = 'rvn.html?mode=edit';")
+	b.Set("accesskey", "i")
 
 	if err := doc.Write(w); err != nil {
 		log.Fatal(err)
