@@ -8,7 +8,10 @@
     width: 2em;
 }
 
+#capsTable th {
+    padding: 0;
+}
+
 #capsTable th:not(:first-child) {
     text-align: right;
-    padding: 0;
 }

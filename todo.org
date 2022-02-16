@@ -2,8 +2,8 @@
 ** debug cap numbers
 *** why are units missing?
 *** why are pools 0?
-** add totals
 * debug login href
+** why does it always link to rcs.html?
 * add Rvn type
 ** Id (init from seq), Notes, StartsAt, EndsAt
 * add RvnView

@@ -55,7 +55,9 @@ func CapsView(w http.ResponseWriter, r *http.Request) {
 			http.StatusInternalServerError)
 		return
 	}
-	
+
+	totals := make([]int, slotCount)
+
 	for _, rc := range rcs {
 		tr = capsTable.Tr()
 		tr.Td().A(fmt.Sprintf("rc.html?mode=show&name=%v", url.QueryEscape(rc.Name)), rc.Name)
@@ -99,15 +101,23 @@ func CapsView(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 		
-		for _, s := range slots {
+		for i, s := range slots {
 			td := tr.Td()
 
 			if s < slotMax {
 				td.Printf("%v", s)
+				totals[i] += s
 			}
 		}
 	}
 
+	tr = capsTable.Tr()
+	tr.Th().Printf("Total")
+	
+	for _, t := range totals {
+		tr.Td().Printf("%v", t)
+	}
+	
 	bs := fs.Br().Div("buttons")
 
 	d := bs.Div("")
