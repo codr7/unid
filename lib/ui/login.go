@@ -29,8 +29,6 @@ func LoginView(w http.ResponseWriter, r *http.Request) {
 	fs.Br().Label("Password")
 	fs.Br().Input("password", "password")
 	bs := fs.Br().Div("buttons")
-	bs.Span().Set("class", "shortcut").Printf("Enter")
-	bs.Br()
 	b := bs.Button("enterButton", "Enter")
 	b.OnClick("login();")
 	

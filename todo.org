@@ -38,7 +38,6 @@
 * add hashed user passwords
 ** add field to UserView
 ** check on login
-* add README
 * add t8
 ** store translations in json files/objects
 ** extract www/t8/en.json
@@ -49,5 +48,3 @@
 #bf1b1b
 #736b1e
 #d9d2c6
-
-<INPUT TYPE="NUMBER" MIN="0" MAX="10" STEP="2" VALUE="6" SIZE="6">

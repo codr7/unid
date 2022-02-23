@@ -128,8 +128,6 @@ func RcsView(w http.ResponseWriter, r *http.Request) {
 	}
 
 	bs := fs.Br().Div("buttons")
-	bs.Span().Set("class", "shortcut").Printf("Alt+N")
-	bs.Br()
 	b := bs.Button("newButton", "New Resource")
 	b.OnClick("window.location = 'rc.html?mode=new';")
 	b.Set("accesskey", "n")

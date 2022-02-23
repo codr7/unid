@@ -120,15 +120,6 @@ tr:not(:last-child) > td {
     padding-bottom: 0.25em;
 }
 
-.shortcut {
-    color: #ed8008;
-    font-size: 75%;
-    padding: 0.1em;
-    margin-bottom: 0.2em;
-    border-radius: 0.1em;
-    display: inline-block;
-}
-
 #buttons {
     margin-top: 2em;
     vertical-align: bottom;

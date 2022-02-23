@@ -121,25 +121,20 @@ func CapsView(w http.ResponseWriter, r *http.Request) {
 	bs := fs.Br().Div("buttons")
 
 	d := bs.Div("")
+	d.Label("Quantity")
 	d.Br().Input("changeTotal", "number").
 		Set("value", "1").
-		Set("size", "2")
+		Set("size", "5")
 
-	d = bs.Div("")
-	d.Span().Set("class", "shortcut").Printf("Alt+C")
-	b := d.Br().Button("changeButton", "Change Total")
+	b := bs.Button("changeButton", "Change Total")
 	b.Set("accesskey", "c")
 	b.OnClick("changeTotal();")
 
-	d = bs.Div("")
-	d.Span().Set("class", "shortcut").Printf("Alt+R")
-	b = d.Br().Button("newRvnButton", "New Reservation")
+	b = bs.Button("newRvnButton", "New Reservation")
 	b.OnClick("window.location = 'rvn.html?mode=new';")
 	b.Set("accesskey", "r")
 
-	d = bs.Div("")
-	d.Span().Set("class", "shortcut").Printf("Alt+I")
-	b = d.Br().Button("newRvnItemButton", "New Item")
+	b = bs.Button("newRvnItemButton", "New Item")
 	b.OnClick("window.location = 'rvn.html?mode=edit';")
 	b.Set("accesskey", "i")
 
