@@ -4,20 +4,20 @@
 *** why are pools 0?
 * debug login href
 ** why does it always link to rcs.html?
-* add Rvn type
+* add Rev type
 ** Id (init from seq), Notes, StartsAt, EndsAt
-* add RvnView
+* add RevView
 ** use RecViewMode
 ** track last reservation in session
 *** use for item link in caps view
-* add RvnItem type
-** Rvn, Rc, StartsAt, EndsAt, Quantity, Rc
+* add RevItem type
+** Rev, Rc, StartsAt, EndsAt, Quantity, Rc
 ** inc Cap.Total on resv if Rc.CapType = FREE
 ** add items to ResvView
 *** open up new item if
 * add Guest type
 ** Id (Seq), Name
-** add RvnGuests
+** add RevGuests
 *** Resv, Guest, Notes, ArrivesAt, DepartsAt
 ** add Guests field to Cap
 *** add arg to UpdateCaps

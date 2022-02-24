@@ -130,12 +130,12 @@ func CapsView(w http.ResponseWriter, r *http.Request) {
 	b.Set("accesskey", "c")
 	b.OnClick("changeTotal();")
 
-	b = bs.Button("newRvnButton", "New Reservation")
-	b.OnClick("window.location = 'rvn.html?mode=new';")
+	b = bs.Button("newRevButton", "New Reservation")
+	b.OnClick("window.location = 'rev.html?mode=new';")
 	b.Set("accesskey", "r")
 
-	b = bs.Button("newRvnItemButton", "New Item")
-	b.OnClick("window.location = 'rvn.html?mode=edit';")
+	b = bs.Button("newRevItemButton", "New Item")
+	b.OnClick("window.location = 'rev.html?mode=edit';")
 	b.Set("accesskey", "i")
 
 	if err := doc.Write(w); err != nil {
